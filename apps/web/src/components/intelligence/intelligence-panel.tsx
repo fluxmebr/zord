@@ -124,7 +124,7 @@ export function IntelligencePanel() {
     const response = MOCK_RESPONSES.default
     setMessages((prev) => [
       ...prev.filter((m) => !m.loading),
-      { id: Date.now().toString(), role: 'assistant', ...response },
+      { id: Date.now().toString(), role: 'assistant' as const, ...response } as Message,
     ])
     setLoading(false)
   }
