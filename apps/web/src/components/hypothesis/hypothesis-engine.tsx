@@ -102,7 +102,7 @@ export function HypothesisEngine() {
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {MOCK_HYPOTHESES.map((hyp) => {
-          const status = STATUS_CONFIG[hyp.status]
+          const status = STATUS_CONFIG[hyp.status] ?? { label: hyp.status, color: 'border-zord-border text-zord-text-muted' }
           return (
             <div
               key={hyp.id}
