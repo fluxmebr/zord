@@ -58,7 +58,7 @@ const PRIORITY_CONFIG: Record<string, { label: string; color: string }> = {
 }
 
 function OperationCard({ op }: { op: typeof MOCK_OPERATIONS[0] }) {
-  const priority = PRIORITY_CONFIG[op.priority]
+  const priority = PRIORITY_CONFIG[op.priority] ?? { label: op.priority, color: 'border-zord-border text-zord-text-muted' }
   const isOverdue = new Date(op.dueDate) < new Date() && op.status !== 'COMPLETED'
 
   return (
