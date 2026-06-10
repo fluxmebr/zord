@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { LanguageSwitcher } from '@/components/ui/language-switcher'
 
 const CHALLENGES = [
   {
@@ -223,7 +224,8 @@ export default function LandingPage() {
               Intelligence OS
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             <Link
               href={`/${locale}/login`}
               className="rounded border border-zord-border px-3 py-1.5 text-xs font-medium text-zord-text-muted transition-colors hover:border-zord-accent hover:text-zord-accent"

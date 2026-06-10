@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
 import { Shield, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react'
+import { LanguageSwitcher } from '@/components/ui/language-switcher'
 
 type Step = 'credentials' | 'mfa'
 
@@ -86,6 +87,9 @@ export function LoginForm() {
         </div>
         <h1 className="text-2xl font-semibold tracking-tight text-zord-text">{t('loginTitle')}</h1>
         <p className="mt-1 text-sm text-zord-text-muted">{t('loginSubtitle')}</p>
+        <div className="mt-4 flex justify-center">
+          <LanguageSwitcher />
+        </div>
       </div>
 
       {/* Form */}
