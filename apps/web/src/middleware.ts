@@ -4,7 +4,7 @@ import { routing } from './i18n/routing'
 
 const intlMiddleware = createMiddleware(routing)
 
-const PUBLIC_PATHS = ['/login', '/forgot-password']
+const PUBLIC_PATHS = ['/login', '/forgot-password', '/super-admin/login']
 
 export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
