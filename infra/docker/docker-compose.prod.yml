@@ -1,0 +1,115 @@
+name: zord
+
+# Produção — portas altas para não conflitar com outros projetos da VPS
+# Postgres: 15432  Redis: 16379  Neo4j: 17474/17687
+# OpenSearch: 19200  MinIO: 19000/19001
+# Todos em rede isolada zord_prod_net
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: zord_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zord
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: zord_db
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - zord_postgres_data:/var/lib/postgresql/data
+      - ./init/postgres:/docker-entrypoint-initdb.d
+    networks:
+      - zord_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zord -d zord_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: zord_redis
+    restart: unless-stopped
+    command: redis-server --requirepass ${REDIS_PASS} --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "127.0.0.1:16379:6379"
+    volumes:
+      - zord_redis_data:/data
+    networks:
+      - zord_net
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASS}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: zord_neo4j
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASS}
+      NEO4J_dbms_memory_heap_initial__size: 256m
+      NEO4J_dbms_memory_heap_max__size: 512m
+      NEO4J_dbms_memory_pagecache_size: 256m
+    ports:
+      - "127.0.0.1:17474:7474"
+      - "127.0.0.1:17687:7687"
+    volumes:
+      - zord_neo4j_data:/data
+      - zord_neo4j_logs:/logs
+    networks:
+      - zord_net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  opensearch:
+    image: opensearchproject/opensearch:2
+    container_name: zord_opensearch
+    restart: unless-stopped
+    environment:
+      - cluster.name=zord-cluster
+      - node.name=zord-node
+      - discovery.type=single-node
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_PASS}
+      - plugins.security.disabled=true
+      - OPENSEARCH_JAVA_OPTS=-Xms256m -Xmx256m
+    ports:
+      - "127.0.0.1:19200:9200"
+    volumes:
+      - zord_opensearch_data:/usr/share/opensearch/data
+    networks:
+      - zord_net
+
+  minio:
+    image: minio/minio:latest
+    container_name: zord_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET}
+    ports:
+      - "127.0.0.1:19000:9000"
+      - "127.0.0.1:19001:9001"
+    volumes:
+      - zord_minio_data:/data
+    networks:
+      - zord_net
+
+volumes:
+  zord_postgres_data:
+  zord_redis_data:
+  zord_neo4j_data:
+  zord_neo4j_logs:
+  zord_opensearch_data:
+  zord_minio_data:
+
+networks:
+  zord_net:
+    name: zord_prod_net
+    driver: bridge
