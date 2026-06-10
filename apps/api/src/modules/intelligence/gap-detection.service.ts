@@ -38,8 +38,10 @@ export class GapDetectionService {
     const gaps: HypothesisGap[] = []
 
     for (let i = 1; i < events.length; i++) {
-      const prev = events[i - 1]
-      const curr = events[i]
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const prev = events[i - 1]!
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const curr = events[i]!
       const diffDays = Math.abs(
         (curr.occurredAt.getTime() - prev.occurredAt.getTime()) / (1000 * 60 * 60 * 24),
       )
@@ -110,15 +112,19 @@ export class GapDetectionService {
 
     for (let i = 0; i < hypotheses.length; i++) {
       for (let j = i + 1; j < hypotheses.length; j++) {
-        const h1Ids = new Set(hypotheses[i].supportingEvidence.map((e) => e.evidenceId))
-        const h2ContradictingIds = hypotheses[j].supportingEvidence.map((e) => e.evidenceId)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const hi = hypotheses[i]!
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const hj = hypotheses[j]!
+        const h1Ids = new Set(hi.supportingEvidence.map((e) => e.evidenceId))
+        const h2ContradictingIds = hj.supportingEvidence.map((e) => e.evidenceId)
         const conflict = h2ContradictingIds.some((id) => h1Ids.has(id))
 
         if (conflict) {
           contradictions.push({
-            hypothesisId1: hypotheses[i].id,
-            hypothesisId2: hypotheses[j].id,
-            description: `"${hypotheses[i].title}" and "${hypotheses[j].title}" share conflicting evidence`,
+            hypothesisId1: hi.id,
+            hypothesisId2: hj.id,
+            description: `"${hi.title}" and "${hj.title}" share conflicting evidence`,
             severity: 'MEDIUM',
           })
         }

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getLocale } from 'next-intl/server'
@@ -7,23 +7,24 @@ import { LANGUAGE_DIRECTION } from '@zord/types'
 import type { Language } from '@zord/types'
 import '@/styles/globals.css'
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+  themeColor: '#0a0c0f',
+}
+
 export const metadata: Metadata = {
   title: { template: '%s — ZORD', default: 'ZORD Intelligence' },
   description: 'ZORD Intelligence Operating System',
   robots: { index: false, follow: false },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: 'cover',
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'ZORD',
   },
-  themeColor: '#0a0c0f',
 }
 
 export function generateStaticParams() {

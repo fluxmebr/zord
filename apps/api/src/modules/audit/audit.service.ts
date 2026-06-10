@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 import { PrismaService } from '../../database/prisma/prisma.service'
 
 @Injectable()
@@ -21,8 +22,8 @@ export class AuditService {
         action,
         resource,
         resourceId,
-        changes: changes ?? undefined,
-        metadata: metadata ?? {},
+        changes: changes !== undefined ? (changes as unknown as Prisma.InputJsonValue) : Prisma.DbNull,
+        metadata: (metadata ?? {}) as unknown as Prisma.InputJsonValue,
       },
     })
   }

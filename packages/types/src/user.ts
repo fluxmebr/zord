@@ -14,7 +14,9 @@ export type Permission =
   | 'entity:delete'
   | 'evidence:upload'
   | 'evidence:read'
+  | 'evidence:update'
   | 'evidence:delete'
+  | 'user:read'
   | 'hypothesis:create'
   | 'hypothesis:read'
   | 'hypothesis:update'
@@ -29,28 +31,28 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   SUPER_ADMIN: [
     'investigation:create', 'investigation:read', 'investigation:update',
     'investigation:delete', 'investigation:archive', 'entity:create', 'entity:read',
-    'entity:update', 'entity:delete', 'evidence:upload', 'evidence:read', 'evidence:delete',
-    'hypothesis:create', 'hypothesis:read', 'hypothesis:update', 'report:generate',
-    'report:export', 'operations:manage', 'audit:read', 'tenant:manage', 'user:manage',
+    'entity:update', 'entity:delete', 'evidence:upload', 'evidence:read', 'evidence:update',
+    'evidence:delete', 'user:read', 'hypothesis:create', 'hypothesis:read', 'hypothesis:update',
+    'report:generate', 'report:export', 'operations:manage', 'audit:read', 'tenant:manage', 'user:manage',
   ],
   TENANT_ADMIN: [
     'investigation:create', 'investigation:read', 'investigation:update',
     'investigation:delete', 'investigation:archive', 'entity:create', 'entity:read',
-    'entity:update', 'entity:delete', 'evidence:upload', 'evidence:read', 'evidence:delete',
-    'hypothesis:create', 'hypothesis:read', 'hypothesis:update', 'report:generate',
-    'report:export', 'operations:manage', 'audit:read', 'user:manage',
+    'entity:update', 'entity:delete', 'evidence:upload', 'evidence:read', 'evidence:update',
+    'evidence:delete', 'user:read', 'hypothesis:create', 'hypothesis:read', 'hypothesis:update',
+    'report:generate', 'report:export', 'operations:manage', 'audit:read', 'user:manage',
   ],
   ANALYST: [
     'investigation:create', 'investigation:read', 'investigation:update',
     'entity:create', 'entity:read', 'entity:update', 'evidence:upload', 'evidence:read',
-    'hypothesis:create', 'hypothesis:read', 'hypothesis:update', 'report:generate',
+    'evidence:update', 'hypothesis:create', 'hypothesis:read', 'hypothesis:update', 'report:generate',
   ],
   OPERATOR: [
-    'investigation:read', 'entity:read', 'evidence:read',
+    'investigation:read', 'entity:read', 'evidence:read', 'user:read',
     'hypothesis:read', 'operations:manage',
   ],
   VIEWER: [
-    'investigation:read', 'entity:read', 'evidence:read', 'hypothesis:read',
+    'investigation:read', 'entity:read', 'evidence:read', 'hypothesis:read', 'user:read',
   ],
 }
 

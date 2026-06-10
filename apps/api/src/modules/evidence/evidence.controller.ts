@@ -29,7 +29,7 @@ export class EvidenceController {
   }
 
   @Post('upload')
-  @RequirePermissions('evidence:create')
+  @RequirePermissions('evidence:upload')
   @HttpCode(HttpStatus.CREATED)
   upload(
     @CurrentUser('tenantId') tenantId: string,
