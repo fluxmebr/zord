@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const CHALLENGES = [
   {
@@ -200,6 +200,13 @@ export default function LandingPage() {
   const params = useParams()
   const locale = (params?.locale as string) ?? 'he'
   const [activeModule, setActiveModule] = useState(0)
+  const [demoTab, setDemoTab] = useState<'graph' | 'timeline' | 'flow'>('graph')
+  const [pulse, setPulse] = useState(false)
+
+  useEffect(() => {
+    const t = setInterval(() => setPulse((p) => !p), 1800)
+    return () => clearInterval(t)
+  }, [])
 
   return (
     <div className="min-h-screen bg-zord-bg text-zord-text">
@@ -286,6 +293,382 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* DEMO VISUAL */}
+      <section className="border-b border-zord-border py-20">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="mb-8 text-center">
+            <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Demonstração Interativa</span>
+            <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Veja o Sistema em Ação</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm text-zord-text-muted">
+              Visualizações reais do ZORD — como analistas mapeiam redes criminosas, constroem timelines e geram fluxos investigativos.
+            </p>
+          </div>
+
+          {/* Tab selector */}
+          <div className="mb-6 flex justify-center gap-2">
+            {([
+              { id: 'graph', label: 'Knowledge Graph', icon: '◉' },
+              { id: 'timeline', label: 'Timeline Engine', icon: '⊞' },
+              { id: 'flow', label: 'Fluxo Investigativo', icon: '⬡' },
+            ] as const).map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setDemoTab(tab.id)}
+                className={`flex items-center gap-2 rounded border px-4 py-2 text-xs font-medium transition-all ${
+                  demoTab === tab.id
+                    ? 'border-zord-accent bg-zord-accent/10 text-zord-accent'
+                    : 'border-zord-border text-zord-text-muted hover:border-zord-accent/50'
+                }`}
+              >
+                <span>{tab.icon}</span>
+                <span className="hidden sm:inline">{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* KNOWLEDGE GRAPH */}
+          {demoTab === 'graph' && (
+            <div className="panel overflow-hidden">
+              {/* Header bar */}
+              <div className="flex items-center justify-between border-b border-zord-border bg-zord-muted/30 px-4 py-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1.5">
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
+                  </div>
+                  <span className="text-[10px] font-mono text-zord-text-muted">OPERATION NIGHTHAWK — ENTITY RELATIONSHIP GRAPH</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`h-1.5 w-1.5 rounded-full ${pulse ? 'bg-zord-accent' : 'bg-zord-accent/30'} transition-colors`} />
+                  <span className="text-[9px] font-mono text-zord-accent">ACTIVE</span>
+                  <span className="rounded border border-red-700/50 bg-red-950/30 px-1.5 py-0.5 text-[9px] font-bold uppercase text-red-400">CRÍTICO</span>
+                </div>
+              </div>
+
+              {/* Graph canvas */}
+              <div className="relative h-80 overflow-hidden bg-[radial-gradient(ellipse_at_center,rgba(0,212,255,0.03)_0%,transparent_70%)] sm:h-96">
+                <svg className="absolute inset-0 h-full w-full" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+                  {/* Grid */}
+                  <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,212,255,0.04)" strokeWidth="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="800" height="400" fill="url(#grid)" />
+
+                  {/* Edges */}
+                  <line x1="400" y1="200" x2="200" y2="100" stroke="rgba(0,212,255,0.3)" strokeWidth="1.5" strokeDasharray="4,2"/>
+                  <line x1="400" y1="200" x2="600" y2="100" stroke="rgba(139,92,246,0.4)" strokeWidth="1.5"/>
+                  <line x1="400" y1="200" x2="620" y2="250" stroke="rgba(34,197,94,0.3)" strokeWidth="1.5" strokeDasharray="4,2"/>
+                  <line x1="400" y1="200" x2="180" y2="300" stroke="rgba(251,191,36,0.4)" strokeWidth="2"/>
+                  <line x1="400" y1="200" x2="400" y2="340" stroke="rgba(239,68,68,0.5)" strokeWidth="2.5"/>
+                  <line x1="600" y1="100" x2="180" y2="300" stroke="rgba(139,92,246,0.2)" strokeWidth="1" strokeDasharray="3,3"/>
+                  <line x1="200" y1="100" x2="400" y2="340" stroke="rgba(251,191,36,0.2)" strokeWidth="1" strokeDasharray="3,3"/>
+                  <line x1="620" y1="250" x2="400" y2="340" stroke="rgba(34,197,94,0.2)" strokeWidth="1"/>
+                  <line x1="200" y1="100" x2="620" y2="250" stroke="rgba(0,212,255,0.15)" strokeWidth="1" strokeDasharray="2,4"/>
+
+                  {/* Edge labels */}
+                  <text x="295" y="142" fill="rgba(0,212,255,0.5)" fontSize="8" textAnchor="middle" fontFamily="monospace">FINANCIA</text>
+                  <text x="508" y="142" fill="rgba(139,92,246,0.6)" fontSize="8" textAnchor="middle" fontFamily="monospace">DIRIGE</text>
+                  <text x="520" y="228" fill="rgba(34,197,94,0.5)" fontSize="8" textAnchor="middle" fontFamily="monospace">LOCALIZADO</text>
+                  <text x="285" y="260" fill="rgba(251,191,36,0.6)" fontSize="8" textAnchor="middle" fontFamily="monospace">CONTROLA</text>
+                  <text x="400" y="278" fill="rgba(239,68,68,0.7)" fontSize="8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">SUSPEITO PRIMÁRIO</text>
+
+                  {/* Center node — Investigation */}
+                  <circle cx="400" cy="200" r="28" fill="rgba(0,212,255,0.1)" stroke="rgba(0,212,255,0.6)" strokeWidth="2"/>
+                  <circle cx="400" cy="200" r="22" fill="rgba(0,10,20,0.9)"/>
+                  <text x="400" y="197" fill="#00d4ff" fontSize="9" textAnchor="middle" fontFamily="monospace" fontWeight="bold">OPERAÇÃO</text>
+                  <text x="400" y="209" fill="#00d4ff" fontSize="9" textAnchor="middle" fontFamily="monospace" fontWeight="bold">NIGHTHAWK</text>
+
+                  {/* Node: SUSPECT */}
+                  <circle cx="400" cy="340" r="26" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.8)" strokeWidth="2.5"/>
+                  <circle cx="400" cy="340" r={pulse ? 30 : 26} fill="none" stroke="rgba(239,68,68,0.2)" strokeWidth="1" className="transition-all duration-700"/>
+                  <text x="400" y="337" fill="#ef4444" fontSize="8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">KARIM</text>
+                  <text x="400" y="348" fill="#ef4444" fontSize="8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">VORONOV</text>
+                  <text x="400" y="375" fill="rgba(239,68,68,0.5)" fontSize="7" textAnchor="middle" fontFamily="monospace">SUSPEITO PRINCIPAL</text>
+
+                  {/* Node: Organization */}
+                  <rect x="540" y="75" width="120" height="50" rx="4" fill="rgba(139,92,246,0.1)" stroke="rgba(139,92,246,0.6)" strokeWidth="1.5"/>
+                  <text x="600" y="97" fill="#8b5cf6" fontSize="8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">BLACK SEA</text>
+                  <text x="600" y="108" fill="#8b5cf6" fontSize="8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">TRADING LTD</text>
+                  <text x="600" y="118" fill="rgba(139,92,246,0.5)" fontSize="7" textAnchor="middle" fontFamily="monospace">ORGANIZAÇÃO</text>
+
+                  {/* Node: Financial */}
+                  <rect x="140" y="75" width="120" height="50" rx="4" fill="rgba(0,212,255,0.08)" stroke="rgba(0,212,255,0.4)" strokeWidth="1.5"/>
+                  <text x="200" y="97" fill="rgba(0,212,255,0.9)" fontSize="8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">TRANSFERÊNCIAS</text>
+                  <text x="200" y="108" fill="rgba(0,212,255,0.9)" fontSize="8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">$4.2M USD</text>
+                  <text x="200" y="118" fill="rgba(0,212,255,0.4)" fontSize="7" textAnchor="middle" fontFamily="monospace">FINANCEIRO</text>
+
+                  {/* Node: Location */}
+                  <circle cx="620" cy="250" r="22" fill="rgba(34,197,94,0.1)" stroke="rgba(34,197,94,0.5)" strokeWidth="1.5"/>
+                  <text x="620" y="247" fill="#22c55e" fontSize="8" textAnchor="middle" fontFamily="monospace">DUBAI</text>
+                  <text x="620" y="257" fill="#22c55e" fontSize="8" textAnchor="middle" fontFamily="monospace">UAE</text>
+                  <text x="620" y="282" fill="rgba(34,197,94,0.4)" fontSize="7" textAnchor="middle" fontFamily="monospace">LOCALIZAÇÃO</text>
+
+                  {/* Node: Asset */}
+                  <circle cx="180" cy="300" r="22" fill="rgba(251,191,36,0.1)" stroke="rgba(251,191,36,0.5)" strokeWidth="1.5"/>
+                  <text x="180" y="297" fill="#fbbf24" fontSize="8" textAnchor="middle" fontFamily="monospace">MIRKA</text>
+                  <text x="180" y="307" fill="#fbbf24" fontSize="8" textAnchor="middle" fontFamily="monospace">CAPITAL</text>
+                  <text x="180" y="330" fill="rgba(251,191,36,0.4)" fontSize="7" textAnchor="middle" fontFamily="monospace">EMPRESA</text>
+
+                  {/* Risk indicator */}
+                  <rect x="30" y="20" width="90" height="50" rx="4" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.3)" strokeWidth="1"/>
+                  <text x="75" y="37" fill="rgba(239,68,68,0.7)" fontSize="7" textAnchor="middle" fontFamily="monospace">RISCO GERAL</text>
+                  <text x="75" y="54" fill="#ef4444" fontSize="20" textAnchor="middle" fontFamily="monospace" fontWeight="bold">89</text>
+                  <text x="75" y="64" fill="rgba(239,68,68,0.5)" fontSize="7" textAnchor="middle" fontFamily="monospace">EXTREMO</text>
+
+                  {/* Stats */}
+                  <text x="680" y="370" fill="rgba(0,212,255,0.3)" fontSize="8" textAnchor="middle" fontFamily="monospace">18 PESSOAS · 27 ORG. · 14 LOCAIS · 153 DOC.</text>
+                </svg>
+
+                {/* Overlay stats */}
+                <div className="absolute bottom-3 left-3 flex gap-2">
+                  {[
+                    { label: 'Entidades', value: '62', color: 'text-zord-accent' },
+                    { label: 'Conexões', value: '124', color: 'text-purple-400' },
+                    { label: 'Evidências', value: '153', color: 'text-yellow-400' },
+                  ].map((s) => (
+                    <div key={s.label} className="rounded border border-zord-border bg-zord-bg/80 px-2 py-1 backdrop-blur-sm">
+                      <div className={`text-xs font-bold ${s.color}`}>{s.value}</div>
+                      <div className="text-[9px] text-zord-text-muted">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TIMELINE */}
+          {demoTab === 'timeline' && (
+            <div className="panel overflow-hidden">
+              <div className="flex items-center justify-between border-b border-zord-border bg-zord-muted/30 px-4 py-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1.5">
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
+                  </div>
+                  <span className="text-[10px] font-mono text-zord-text-muted">OPERATION NIGHTHAWK — TIMELINE ENGINE</span>
+                </div>
+                <span className="text-[9px] font-mono text-zord-text-muted">ABR 2024 → MAI 2024</span>
+              </div>
+
+              <div className="p-4">
+                {/* Timeline axis */}
+                <div className="mb-4 flex items-center gap-0 overflow-x-auto pb-2">
+                  {['10 ABR', '15 ABR', '20 ABR', '25 ABR', '30 ABR', '05 MAI', '10 MAI', '15 MAI', '20 MAI'].map((d) => (
+                    <div key={d} className="shrink-0 flex-1 text-center text-[9px] text-zord-text-muted font-mono">{d}</div>
+                  ))}
+                </div>
+
+                {/* Tracks */}
+                {[
+                  {
+                    label: 'COMUNICAÇÃO',
+                    color: 'bg-blue-500/20 border-blue-500/50 text-blue-400',
+                    dot: 'bg-blue-400',
+                    events: [
+                      { pos: 5, label: 'Chamada Cript.', wide: false },
+                      { pos: 22, label: 'Email', wide: false },
+                      { pos: 45, label: 'Msg Telegram', wide: false },
+                      { pos: 62, label: 'Chamada VPN', wide: false },
+                      { pos: 80, label: 'Mensagem', wide: false },
+                    ],
+                  },
+                  {
+                    label: 'FINANCEIRO',
+                    color: 'bg-yellow-500/20 border-yellow-500/50 text-yellow-400',
+                    dot: 'bg-yellow-400',
+                    events: [
+                      { pos: 15, label: 'Wire $85k', wide: true },
+                      { pos: 38, label: 'Saque', wide: false },
+                      { pos: 55, label: 'Wire $350k', wide: true },
+                      { pos: 72, label: 'Depósito', wide: false },
+                    ],
+                  },
+                  {
+                    label: 'DESLOCAMENTO',
+                    color: 'bg-green-500/20 border-green-500/50 text-green-400',
+                    dot: 'bg-green-400',
+                    events: [
+                      { pos: 12, label: 'Dubai → Istambul', wide: true },
+                      { pos: 42, label: 'Hotel', wide: false },
+                      { pos: 65, label: 'Voo MIA→HKG', wide: true },
+                    ],
+                  },
+                  {
+                    label: 'DOCUMENTOS',
+                    color: 'bg-purple-500/20 border-purple-500/50 text-purple-400',
+                    dot: 'bg-purple-400',
+                    events: [
+                      { pos: 8, label: 'Contrato', wide: false },
+                      { pos: 30, label: 'Doc Modificado', wide: false },
+                      { pos: 50, label: 'Arquivo Deletado', wide: false },
+                      { pos: 70, label: 'Novo Contrato', wide: false },
+                      { pos: 88, label: 'PDF Exportado', wide: false },
+                    ],
+                  },
+                ].map((track) => (
+                  <div key={track.label} className="mb-3 flex items-center gap-3">
+                    <div className="w-20 shrink-0">
+                      <div className={`rounded border px-1.5 py-0.5 text-center text-[8px] font-bold ${track.color}`}>
+                        {track.label}
+                      </div>
+                    </div>
+                    <div className="relative h-8 flex-1 rounded border border-zord-border/30 bg-zord-muted/10">
+                      {track.events.map((ev, i) => (
+                        <div
+                          key={i}
+                          className={`absolute top-1/2 -translate-y-1/2 rounded border px-1 py-0.5 ${track.color} cursor-pointer hover:opacity-100 transition-opacity`}
+                          style={{ left: `${ev.pos}%`, transform: 'translate(-50%, -50%)', opacity: 0.85 }}
+                        >
+                          <span className="whitespace-nowrap text-[7px] font-mono">{ev.label}</span>
+                        </div>
+                      ))}
+                      {/* Timeline bar */}
+                      <div className={`absolute inset-y-0 left-0 w-full rounded opacity-10 ${track.dot.replace('bg-', 'bg-')}`} />
+                    </div>
+                  </div>
+                ))}
+
+                {/* Correlation highlight */}
+                <div className="mt-4 rounded border border-zord-accent/30 bg-zord-accent/5 p-3">
+                  <div className="flex items-center gap-2">
+                    <span className={`h-2 w-2 rounded-full bg-zord-accent ${pulse ? 'opacity-100' : 'opacity-40'} transition-opacity`} />
+                    <span className="text-[10px] font-medium text-zord-accent">CORRELAÇÃO DETECTADA PELA IA</span>
+                  </div>
+                  <p className="mt-1 text-[10px] leading-relaxed text-zord-text-muted">
+                    Padrão identificado: transferências financeiras de alto valor (≥$100k) ocorrem sistematicamente 24-48h após comunicações criptografadas com origem Dubai. Probabilidade de lavagem de dinheiro: <span className="font-bold text-zord-accent">94%</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* INVESTIGATION FLOW */}
+          {demoTab === 'flow' && (
+            <div className="panel overflow-hidden">
+              <div className="flex items-center justify-between border-b border-zord-border bg-zord-muted/30 px-4 py-2">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-1.5">
+                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
+                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
+                  </div>
+                  <span className="text-[10px] font-mono text-zord-text-muted">ZORD — FLUXO DO CICLO DE INTELIGÊNCIA</span>
+                </div>
+              </div>
+
+              <div className="p-6 overflow-x-auto">
+                <div className="mx-auto min-w-[600px] max-w-3xl">
+                  {/* Flow chart */}
+                  <div className="flex flex-col items-center gap-0">
+
+                    {/* Start */}
+                    <div className="rounded-full border border-zord-accent bg-zord-accent/10 px-6 py-2">
+                      <span className="text-xs font-bold text-zord-accent">INÍCIO DA INVESTIGAÇÃO</span>
+                    </div>
+                    <FlowArrow />
+
+                    {/* Phase 1 — Parallel inputs */}
+                    <div className="w-full">
+                      <div className="mb-2 text-center text-[9px] font-medium uppercase tracking-widest text-zord-text-muted">Fase 1 — Coleta</div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { label: 'Entidades Cadastradas', icon: '◈', color: 'border-purple-700/50 text-purple-400 bg-purple-950/20' },
+                          { label: 'Evidências no Vault', icon: '⊟', color: 'border-yellow-700/50 text-yellow-400 bg-yellow-950/20' },
+                          { label: 'Trust Engine Avalia', icon: '⬟', color: 'border-teal-700/50 text-teal-400 bg-teal-950/20' },
+                        ].map((n) => (
+                          <div key={n.label} className={`rounded border p-3 text-center ${n.color}`}>
+                            <div className="mb-1 text-lg">{n.icon}</div>
+                            <div className="text-[9px] font-medium">{n.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <FlowArrow />
+
+                    {/* Phase 2 — Analysis */}
+                    <div className="w-full">
+                      <div className="mb-2 text-center text-[9px] font-medium uppercase tracking-widest text-zord-text-muted">Fase 2 — Análise & Correlação</div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { label: 'Knowledge Graph mapeia redes', icon: '◉', color: 'border-cyan-700/50 text-cyan-400 bg-cyan-950/20' },
+                          { label: 'Timeline ordena eventos', icon: '⊞', color: 'border-green-700/50 text-green-400 bg-green-950/20' },
+                          { label: 'IA detecta padrões', icon: '⬢', color: 'border-pink-700/50 text-pink-400 bg-pink-950/20' },
+                        ].map((n) => (
+                          <div key={n.label} className={`rounded border p-3 text-center ${n.color}`}>
+                            <div className="mb-1 text-lg">{n.icon}</div>
+                            <div className="text-[9px] font-medium">{n.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <FlowArrow />
+
+                    {/* Phase 3 — Decision */}
+                    <div className="w-full">
+                      <div className="mb-2 text-center text-[9px] font-medium uppercase tracking-widest text-zord-text-muted">Fase 3 — Hipóteses</div>
+                      <div className="rounded border border-orange-700/50 bg-orange-950/20 p-4 text-center">
+                        <div className="mb-2 flex items-center justify-center gap-2">
+                          <span className="text-xl text-orange-400">⊕</span>
+                          <span className="text-sm font-semibold text-orange-400">Hypothesis Engine</span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          {[
+                            { h: 'H1: Lavagem de $4.2M', score: 94, color: 'text-red-400' },
+                            { h: 'H2: Rede de Influência', score: 78, color: 'text-yellow-400' },
+                            { h: 'H3: Contrabando Via Dubai', score: 61, color: 'text-orange-400' },
+                            { h: 'H4: Fraude Financeira', score: 45, color: 'text-zord-text-muted' },
+                          ].map((hyp) => (
+                            <div key={hyp.h} className="flex items-center justify-between rounded border border-zord-border bg-zord-bg/50 px-2 py-1.5">
+                              <span className="text-[9px] text-zord-text-muted">{hyp.h}</span>
+                              <span className={`text-[10px] font-bold ${hyp.color}`}>{hyp.score}%</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <FlowArrow />
+
+                    {/* Phase 4 — Output */}
+                    <div className="w-full">
+                      <div className="mb-2 text-center text-[9px] font-medium uppercase tracking-widest text-zord-text-muted">Fase 4 — Produto de Inteligência</div>
+                      <div className="grid grid-cols-2 gap-3">
+                        {[
+                          { label: 'Relatório Tático', sub: 'Para operações imediatas', icon: '⊜', color: 'border-blue-700/50 text-blue-400 bg-blue-950/20' },
+                          { label: 'Briefing Executivo', sub: 'Para tomada de decisão', icon: '⊜', color: 'border-indigo-700/50 text-indigo-400 bg-indigo-950/20' },
+                        ].map((n) => (
+                          <div key={n.label} className={`rounded border p-3 ${n.color}`}>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-base">{n.icon}</span>
+                              <span className="text-xs font-semibold">{n.label}</span>
+                            </div>
+                            <div className="text-[9px] opacity-60">{n.sub}</div>
+                            <div className="mt-2 flex gap-1">
+                              <span className="rounded border border-current px-1 py-0.5 text-[7px] opacity-60">PDF</span>
+                              <span className="rounded border border-current px-1 py-0.5 text-[7px] opacity-60">DOCX</span>
+                              <span className="rounded border border-current px-1 py-0.5 text-[7px] opacity-60">CLASSIFICADO</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <FlowArrow />
+
+                    {/* End */}
+                    <div className="rounded-full border border-green-600 bg-green-950/30 px-6 py-2">
+                      <span className="text-xs font-bold text-green-400">AÇÃO OPERACIONAL / ENCERRAMENTO</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -630,6 +1013,15 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+    </div>
+  )
+}
+
+function FlowArrow() {
+  return (
+    <div className="flex flex-col items-center py-1">
+      <div className="h-6 w-px bg-gradient-to-b from-zord-accent/50 to-zord-accent/20" />
+      <div className="text-zord-accent/50 text-xs">▼</div>
     </div>
   )
 }
