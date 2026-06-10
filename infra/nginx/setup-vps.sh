@@ -57,7 +57,7 @@ cd $APP_DIR
 if [ -d ".git" ]; then
   git pull origin main
 else
-  git clone https://github.com/SEU_USUARIO/zord.git .
+  git clone https://github.com/fluxmebr/zord.git .
 fi
 
 # ── 6. .env de produção ────────────────────
