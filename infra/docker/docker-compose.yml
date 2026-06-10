@@ -1,0 +1,193 @@
+name: zord
+
+services:
+  # ──────────────────────────────────────────────
+  # PostgreSQL — Primary database
+  # ──────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: zord_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: zord
+      POSTGRES_PASSWORD: zord_secret
+      POSTGRES_DB: zord_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init/postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zord -d zord_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ──────────────────────────────────────────────
+  # Redis — Cache + Queue (BullMQ)
+  # ──────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: zord_redis
+    restart: unless-stopped
+    command: redis-server --requirepass zord_redis_secret --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "zord_redis_secret", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ──────────────────────────────────────────────
+  # Neo4j — Knowledge Graph
+  # ──────────────────────────────────────────────
+  neo4j:
+    image: neo4j:5-community
+    container_name: zord_neo4j
+    restart: unless-stopped
+    environment:
+      NEO4J_AUTH: neo4j/zord_neo4j_secret
+      NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
+      NEO4J_dbms_memory_heap_initial__size: 512m
+      NEO4J_dbms_memory_heap_max__size: 2G
+      NEO4J_dbms_memory_pagecache_size: 512m
+    ports:
+      - "7474:7474"   # Browser
+      - "7687:7687"   # Bolt
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+      - neo4j_plugins:/plugins
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7474 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ──────────────────────────────────────────────
+  # OpenSearch — Full-text search + Analytics
+  # ──────────────────────────────────────────────
+  opensearch:
+    image: opensearchproject/opensearch:2
+    container_name: zord_opensearch
+    restart: unless-stopped
+    environment:
+      - cluster.name=zord-cluster
+      - node.name=zord-node
+      - discovery.type=single-node
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=Zord@OpenSearch1
+      - plugins.security.disabled=false
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sk https://admin:Zord@OpenSearch1@localhost:9200/_cluster/health | grep -v '\"status\":\"red\"'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2
+    container_name: zord_opensearch_dashboards
+    restart: unless-stopped
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch:9200"]'
+    ports:
+      - "5601:5601"
+    depends_on:
+      opensearch:
+        condition: service_healthy
+
+  # ──────────────────────────────────────────────
+  # MinIO — Evidence Vault storage
+  # ──────────────────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: zord_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: zord_minio_access
+      MINIO_ROOT_PASSWORD: zord_minio_secret
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ──────────────────────────────────────────────
+  # Prometheus — Metrics collection
+  # ──────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: zord_prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+  # ──────────────────────────────────────────────
+  # Grafana — Observability dashboard
+  # ──────────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: zord_grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=zord_grafana_secret
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3100:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+
+  # ──────────────────────────────────────────────
+  # Loki — Log aggregation
+  # ──────────────────────────────────────────────
+  loki:
+    image: grafana/loki:latest
+    container_name: zord_loki
+    restart: unless-stopped
+    ports:
+      - "3200:3100"
+    volumes:
+      - loki_data:/loki
+      - ./loki/loki.yml:/etc/loki/local-config.yaml
+    command: -config.file=/etc/loki/local-config.yaml
+
+volumes:
+  postgres_data:
+  redis_data:
+  neo4j_data:
+  neo4j_logs:
+  neo4j_plugins:
+  opensearch_data:
+  minio_data:
+  prometheus_data:
+  grafana_data:
+  loki_data:
+
+networks:
+  default:
+    name: zord_network

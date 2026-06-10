@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Safe area insets (iOS notch / home indicator) */
+    --sat: env(safe-area-inset-top);
+    --sar: env(safe-area-inset-right);
+    --sab: env(safe-area-inset-bottom);
+    --sal: env(safe-area-inset-left);
+    /* ZORD — Dark Intelligence Theme */
+    --background: 220 13% 6%;
+    --foreground: 213 31% 91%;
+    --card: 220 13% 9%;
+    --card-foreground: 213 31% 91%;
+    --popover: 220 13% 9%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 218 14% 15%;
+    --secondary-foreground: 213 31% 91%;
+    --muted: 218 14% 13%;
+    --muted-foreground: 215 20% 40%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 218 14% 18%;
+    --input: 218 14% 15%;
+    --ring: 217 91% 60%;
+    --radius: 0.375rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  body {
+    @apply bg-zord-bg text-zord-text;
+    font-family: 'Inter', system-ui, sans-serif;
+    /* Prevent iOS bounce & zoom on input focus */
+    -webkit-text-size-adjust: 100%;
+    touch-action: pan-y;
+  }
+
+  /* Tap highlight removal on mobile */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Prevent double-tap zoom on buttons */
+  button, a {
+    touch-action: manipulation;
+  }
+
+  /* Hide scrollbar on mobile panels */
+  @media (max-width: 768px) {
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    * {
+      scrollbar-width: none;
+    }
+  }
+
+  /* RTL Support */
+  [dir="rtl"] {
+    font-family: 'Inter', 'Arial Hebrew', system-ui, sans-serif;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-1.5 h-1.5;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-zord-bg;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zord-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-zord-muted;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-zord-accent/30 text-zord-text;
+  }
+}
+
+@layer utilities {
+  /* Classification badges */
+  .badge-top-secret {
+    @apply bg-red-950 text-red-400 border border-red-800 font-mono text-xs uppercase tracking-wider;
+  }
+  .badge-secret {
+    @apply bg-orange-950 text-orange-400 border border-orange-800 font-mono text-xs uppercase tracking-wider;
+  }
+  .badge-confidential {
+    @apply bg-yellow-950 text-yellow-500 border border-yellow-800 font-mono text-xs uppercase tracking-wider;
+  }
+  .badge-internal {
+    @apply bg-blue-950 text-blue-400 border border-blue-800 font-mono text-xs uppercase tracking-wider;
+  }
+  .badge-open {
+    @apply bg-green-950 text-green-400 border border-green-800 font-mono text-xs uppercase tracking-wider;
+  }
+
+  /* Status indicators */
+  .status-dot-active {
+    @apply h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse;
+  }
+  .status-dot-critical {
+    @apply h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse;
+  }
+  .status-dot-idle {
+    @apply h-1.5 w-1.5 rounded-full bg-zinc-500;
+  }
+
+  /* Panel styles */
+  .panel {
+    @apply bg-zord-panel border border-zord-border rounded-md;
+  }
+
+  .panel-header {
+    @apply px-4 py-3 border-b border-zord-border flex items-center justify-between;
+  }
+
+  /* Text styles */
+  .text-classification {
+    @apply font-mono text-xs uppercase tracking-widest;
+  }
+
+  .label-dim {
+    @apply text-xs text-zord-text-muted uppercase tracking-wider;
+  }
+
+  /* Safe area bottom padding for iOS */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  /* Mobile touch feedback */
+  .touch-active {
+    @apply transition-colors active:bg-zord-muted/70;
+  }
+
+  /* Full-width on mobile, auto on desktop */
+  .btn {
+    @apply flex items-center justify-center gap-2 rounded px-4 py-2.5 text-sm font-medium transition-colors;
+  }
+  .btn-primary {
+    @apply btn bg-zord-accent text-white hover:bg-zord-accent-dim active:bg-blue-700;
+  }
+  .btn-secondary {
+    @apply btn border border-zord-border bg-zord-panel text-zord-text-muted hover:text-zord-text;
+  }
+
+  /* Mobile-optimized form inputs */
+  .input {
+    @apply h-11 w-full rounded border border-zord-border bg-zord-muted px-3 text-sm text-zord-text placeholder:text-zord-text-dim focus:border-zord-accent focus:outline-none focus:ring-1 focus:ring-zord-accent/30 md:h-9;
+  }
+}

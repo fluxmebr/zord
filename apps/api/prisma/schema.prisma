@@ -1,0 +1,625 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("DATABASE_SHADOW_URL")
+}
+
+// ============================================================
+// MULTI-TENANT FOUNDATION
+// ============================================================
+
+model Tenant {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  domain      String?
+  logoUrl     String?
+  status      TenantStatus @default(ACTIVE)
+  plan        TenantPlan   @default(TRIAL)
+  settings    Json         @default("{}")
+
+  users            User[]
+  investigations   Investigation[]
+  entities         Entity[]
+  evidence         Evidence[]
+  hypotheses       Hypothesis[]
+  operations       Operation[]
+  reports          Report[]
+  alerts           Alert[]
+  auditLogs        AuditLog[]
+  apiKeys          ApiKey[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([slug])
+  @@map("tenants")
+}
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+  TRIAL
+  ARCHIVED
+}
+
+enum TenantPlan {
+  TRIAL
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+// ============================================================
+// USERS & AUTH
+// ============================================================
+
+model User {
+  id            String     @id @default(uuid())
+  tenantId      String
+  tenant        Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  email         String
+  name          String
+  passwordHash  String
+  avatarUrl     String?
+  role          UserRole   @default(ANALYST)
+  language      String     @default("he")
+  timezone      String     @default("UTC")
+
+  mfaEnabled    Boolean    @default(false)
+  mfaSecret     String?
+  mfaMethod     MfaMethod?
+
+  status        UserStatus @default(ACTIVE)
+  lastLoginAt   DateTime?
+  loginAttempts Int        @default(0)
+  lockedUntil   DateTime?
+
+  sessions         Session[]
+  investigations   Investigation[]   @relation("InvestigationLead")
+  auditLogs        AuditLog[]
+  createdInvs      Investigation[]   @relation("InvestigationCreator")
+  uploadedEvidence Evidence[]
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@unique([tenantId, email])
+  @@index([tenantId])
+  @@map("users")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  TENANT_ADMIN
+  ANALYST
+  OPERATOR
+  VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum MfaMethod {
+  TOTP
+  SMS
+  EMAIL
+}
+
+model Session {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenantId    String
+
+  deviceId    String
+  ipAddress   String
+  userAgent   String
+  refreshToken String  @unique
+  expiresAt   DateTime
+  revokedAt   DateTime?
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([refreshToken])
+  @@map("sessions")
+}
+
+model ApiKey {
+  id          String   @id @default(uuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name        String
+  keyHash     String   @unique
+  prefix      String
+  permissions Json     @default("[]")
+  expiresAt   DateTime?
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+
+  createdAt   DateTime @default(now())
+
+  @@index([tenantId])
+  @@map("api_keys")
+}
+
+// ============================================================
+// INVESTIGATIONS
+// ============================================================
+
+model Investigation {
+  id            String               @id @default(uuid())
+  tenantId      String
+  tenant        Tenant               @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  code          String
+  name          String
+  description   String               @default("")
+  classification ClassificationLevel @default(INTERNAL)
+  priority      Priority             @default(MEDIUM)
+  status        InvestigationStatus  @default(PLANNING)
+  objectives    String[]
+  tags          String[]
+
+  leadAnalystId String
+  leadAnalyst   User                 @relation("InvestigationLead", fields: [leadAnalystId], references: [id])
+  createdById   String
+  createdBy     User                 @relation("InvestigationCreator", fields: [createdById], references: [id])
+
+  startDate     DateTime?
+  targetDate    DateTime?
+  concludedAt   DateTime?
+
+  entities      InvestigationEntity[]
+  evidence      Evidence[]
+  hypotheses    Hypothesis[]
+  operations    Operation[]
+  reports       Report[]
+  timeline      TimelineEvent[]
+  alerts        Alert[]
+
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+
+  @@unique([tenantId, code])
+  @@index([tenantId])
+  @@index([tenantId, status])
+  @@map("investigations")
+}
+
+enum InvestigationStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  CONCLUDED
+  ARCHIVED
+  CANCELLED
+}
+
+enum ClassificationLevel {
+  TOP_SECRET
+  SECRET
+  CONFIDENTIAL
+  INTERNAL
+  OPEN
+}
+
+enum Priority {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+// ============================================================
+// ENTITIES
+// ============================================================
+
+model Entity {
+  id            String     @id @default(uuid())
+  tenantId      String
+  tenant        Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  globalId      String     @unique @default(uuid())
+  type          EntityType
+  label         String
+  aliases       String[]
+  attributes    Json       @default("{}")
+  sources       Json       @default("[]")
+  trustScore    Int?
+
+  investigations InvestigationEntity[]
+  sourceRelations EntityRelationship[] @relation("RelationshipSource")
+  targetRelations EntityRelationship[] @relation("RelationshipTarget")
+  hypothesisLinks HypothesisEntity[]
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([tenantId])
+  @@index([tenantId, type])
+  @@index([globalId])
+  @@map("entities")
+}
+
+enum EntityType {
+  PERSON
+  COMPANY
+  EMAIL
+  PHONE
+  ADDRESS
+  DOMAIN
+  VEHICLE
+  PROCESS
+  DOCUMENT
+  WEBSITE
+  SOCIAL_PROFILE
+  ORGANIZATION
+}
+
+model InvestigationEntity {
+  investigationId String
+  entityId        String
+  investigation   Investigation @relation(fields: [investigationId], references: [id], onDelete: Cascade)
+  entity          Entity        @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  addedAt    DateTime @default(now())
+  addedBy    String
+
+  @@id([investigationId, entityId])
+  @@map("investigation_entities")
+}
+
+model EntityRelationship {
+  id              String           @id @default(uuid())
+  tenantId        String
+  sourceEntityId  String
+  targetEntityId  String
+  sourceEntity    Entity           @relation("RelationshipSource", fields: [sourceEntityId], references: [id])
+  targetEntity    Entity           @relation("RelationshipTarget", fields: [targetEntityId], references: [id])
+
+  type            RelationshipType
+  description     String?
+  sources         Json             @default("[]")
+  trustScore      Int?
+  startDate       DateTime?
+  endDate         DateTime?
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([tenantId])
+  @@index([sourceEntityId])
+  @@index([targetEntityId])
+  @@map("entity_relationships")
+}
+
+enum RelationshipType {
+  PARTNER
+  ADMINISTRATOR
+  CONTACT
+  OWNER
+  CITATION
+  TRANSFER
+  PARTICIPANT
+  LINKED
+  EMPLOYEE
+  SUBSIDIARY
+  ASSOCIATED
+}
+
+// ============================================================
+// EVIDENCE VAULT
+// ============================================================
+
+model Evidence {
+  id             String        @id @default(uuid())
+  tenantId       String
+  tenant         Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  investigationId String
+  investigation  Investigation @relation(fields: [investigationId], references: [id])
+
+  type           EvidenceType
+  status         EvidenceStatus @default(UPLOADING)
+  filename       String
+  originalFilename String
+  mimeType       String
+  sizeBytes      BigInt
+  hash           String
+  storageKey     String
+  thumbnailKey   String?
+  description    String?
+  tags           String[]
+  ocrText        String?
+  transcription  String?
+  metadata       Json           @default("{}")
+
+  uploadedById   String
+  uploadedBy     User           @relation(fields: [uploadedById], references: [id])
+
+  chainOfCustody Json           @default("[]")
+  annotations    EvidenceAnnotation[]
+  hypothesisLinks HypothesisEvidence[]
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([tenantId])
+  @@index([investigationId])
+  @@index([hash])
+  @@map("evidence")
+}
+
+enum EvidenceType {
+  PDF
+  IMAGE
+  VIDEO
+  AUDIO
+  SPREADSHEET
+  DOCUMENT
+  TEXT
+  OTHER
+}
+
+enum EvidenceStatus {
+  UPLOADING
+  PROCESSING
+  READY
+  FAILED
+  ARCHIVED
+}
+
+model EvidenceAnnotation {
+  id         String   @id @default(uuid())
+  evidenceId String
+  evidence   Evidence @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+  userId     String
+  content    String
+  position   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([evidenceId])
+  @@map("evidence_annotations")
+}
+
+// ============================================================
+// HYPOTHESIS ENGINE
+// ============================================================
+
+model Hypothesis {
+  id              String            @id @default(uuid())
+  tenantId        String
+  tenant          Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  investigationId String
+  investigation   Investigation     @relation(fields: [investigationId], references: [id])
+
+  title           String
+  description     String
+  objective       String
+  status          HypothesisStatus  @default(DRAFT)
+  gaps            Json              @default("[]")
+  aiAnalysis      Json?
+  trustScore      Int?
+
+  entities        HypothesisEntity[]
+  supportingEvidence HypothesisEvidence[] @relation("SupportingEvidence")
+  contradictingEvidence HypothesisEvidence[] @relation("ContradictingEvidence")
+
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([tenantId, investigationId])
+  @@map("hypotheses")
+}
+
+enum HypothesisStatus {
+  DRAFT
+  ACTIVE
+  VALIDATED
+  REFUTED
+  SUSPENDED
+}
+
+model HypothesisEntity {
+  hypothesisId String
+  entityId     String
+  hypothesis   Hypothesis @relation(fields: [hypothesisId], references: [id], onDelete: Cascade)
+  entity       Entity     @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@id([hypothesisId, entityId])
+  @@map("hypothesis_entities")
+}
+
+model HypothesisEvidence {
+  hypothesisId String
+  evidenceId   String
+  role         EvidenceRole
+  hypothesis   Hypothesis @relation(name: "SupportingEvidence", fields: [hypothesisId], references: [id], onDelete: Cascade, map: "hypothesis_evidence_supporting")
+  hypothesisContradicting Hypothesis @relation(name: "ContradictingEvidence", fields: [hypothesisId], references: [id], onDelete: Cascade, map: "hypothesis_evidence_contradicting")
+  evidence     Evidence   @relation(fields: [evidenceId], references: [id], onDelete: Cascade)
+
+  @@id([hypothesisId, evidenceId, role])
+  @@map("hypothesis_evidence")
+}
+
+enum EvidenceRole {
+  SUPPORTING
+  CONTRADICTING
+}
+
+// ============================================================
+// TIMELINE ENGINE
+// ============================================================
+
+model TimelineEvent {
+  id              String        @id @default(uuid())
+  tenantId        String
+  investigationId String?
+  investigation   Investigation? @relation(fields: [investigationId], references: [id])
+
+  eventType       String
+  title           String
+  description     String?
+  occurredAt      DateTime
+  sourceType      String
+  sourceId        String
+  metadata        Json          @default("{}")
+  entityIds       String[]
+
+  createdAt       DateTime      @default(now())
+
+  @@index([tenantId])
+  @@index([tenantId, investigationId])
+  @@index([tenantId, occurredAt])
+  @@map("timeline_events")
+}
+
+// ============================================================
+// OPERATIONS CENTER
+// ============================================================
+
+model Operation {
+  id              String           @id @default(uuid())
+  tenantId        String
+  tenant          Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  investigationId String?
+  investigation   Investigation?   @relation(fields: [investigationId], references: [id])
+
+  title           String
+  description     String?
+  status          OperationStatus  @default(PENDING)
+  priority        Priority         @default(MEDIUM)
+  assigneeIds     String[]
+  dueDate         DateTime?
+  completedAt     DateTime?
+  checklists      Json             @default("[]")
+  notes           String?
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([tenantId])
+  @@map("operations")
+}
+
+enum OperationStatus {
+  PENDING
+  IN_PROGRESS
+  BLOCKED
+  COMPLETED
+  CANCELLED
+}
+
+// ============================================================
+// REPORTS
+// ============================================================
+
+model Report {
+  id              String       @id @default(uuid())
+  tenantId        String
+  tenant          Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  investigationId String?
+  investigation   Investigation? @relation(fields: [investigationId], references: [id])
+
+  type            ReportType
+  title           String
+  content         Json         @default("{}")
+  storageKey      String?
+  generatedById   String
+  status          String       @default("GENERATING")
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([tenantId])
+  @@map("reports")
+}
+
+enum ReportType {
+  EXECUTIVE
+  TECHNICAL
+  PARTIAL
+  FINAL
+  INTELLIGENCE_SUMMARY
+}
+
+// ============================================================
+// ALERTS
+// ============================================================
+
+model Alert {
+  id              String      @id @default(uuid())
+  tenantId        String
+  tenant          Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  investigationId String?
+  investigation   Investigation? @relation(fields: [investigationId], references: [id])
+
+  severity        AlertSeverity
+  title           String
+  description     String?
+  sourceType      String
+  sourceId        String?
+  status          AlertStatus @default(OPEN)
+  assignedTo      String?
+  resolvedAt      DateTime?
+  metadata        Json        @default("{}")
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@index([tenantId, status])
+  @@map("alerts")
+}
+
+enum AlertSeverity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFO
+}
+
+enum AlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+  DISMISSED
+}
+
+// ============================================================
+// AUDIT LOGS (IMMUTABLE)
+// ============================================================
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  tenantId   String
+  tenant     Tenant   @relation(fields: [tenantId], references: [id])
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+
+  action     String
+  resource   String
+  resourceId String?
+  changes    Json?
+  ipAddress  String?
+  userAgent  String?
+  metadata   Json     @default("{}")
+
+  createdAt  DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([tenantId, resource])
+  @@index([userId])
+  @@map("audit_logs")
+}
