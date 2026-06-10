@@ -328,6 +328,34 @@ NGINXEOF
 
 nginx -t && systemctl reload nginx
 
+# ── Renovação automática SSL ───────────────
+systemctl enable certbot.timer 2>/dev/null || true
+systemctl start certbot.timer 2>/dev/null || true
+
+# ── Logrotate para logs PM2 ─────────────────
+cat > /etc/logrotate.d/zord << 'LREOF'
+/opt/zord/logs/*.log {
+    daily
+    rotate 14
+    compress
+    delaycompress
+    missingok
+    notifempty
+    create 0640 root root
+}
+LREOF
+
+# ── Backup automático do Postgres ──────────
+cat > /etc/cron.daily/zord-backup << 'CEOF'
+#!/bin/bash
+BACKUP_DIR="/opt/zord/backups"
+mkdir -p $BACKUP_DIR
+docker exec zord_postgres pg_dump -U zord zord_db | gzip > $BACKUP_DIR/zord_$(date +%Y%m%d_%H%M%S).sql.gz
+# Manter apenas 7 dias
+find $BACKUP_DIR -name "*.sql.gz" -mtime +7 -delete
+CEOF
+chmod +x /etc/cron.daily/zord-backup
+
 # ── Firewall (apenas abre 80/443, não toca em outras regras) ─
 ufw allow 80/tcp 2>/dev/null || true
 ufw allow 443/tcp 2>/dev/null || true

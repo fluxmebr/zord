@@ -37,7 +37,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
         message = 'Resource not found'
       }
     } else {
-      this.logger.error('Unhandled exception', exception)
+      // Em produção, logar apenas tipo + mensagem sem stack trace
+      const isProd = process.env.NODE_ENV === 'production'
+      if (isProd) {
+        this.logger.error(`Unhandled exception: ${(exception as Error)?.constructor?.name ?? 'Unknown'}`)
+      } else {
+        this.logger.error('Unhandled exception', exception)
+      }
     }
 
     response.status(status).json({

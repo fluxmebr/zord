@@ -1,40 +1,49 @@
 import axios from 'axios'
 
+// Tokens são enviados via httpOnly cookies (withCredentials: true).
+// Nenhum token é armazenado em localStorage — proteção contra XSS.
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001',
-  withCredentials: true,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  withCredentials: true,  // envia/recebe cookies httpOnly automaticamente
+  timeout: 30_000,
+  headers: { 'Content-Type': 'application/json' },
 })
 
-api.interceptors.request.use((config) => {
-  if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('zord_access_token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-  }
-  return config
-})
+// Mutex para evitar múltiplos refreshes simultâneos
+let isRefreshing = false
+let refreshQueue: Array<(token: string) => void> = []
 
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
-    if (error.response?.status === 401) {
-      const refreshToken = localStorage.getItem('zord_refresh_token')
-      if (refreshToken) {
-        try {
-          const { data } = await axios.post('/api/v1/auth/refresh', { refreshToken })
-          localStorage.setItem('zord_access_token', data.data.accessToken)
-          localStorage.setItem('zord_refresh_token', data.data.refreshToken)
-          error.config.headers.Authorization = `Bearer ${data.data.accessToken}`
-          return api.request(error.config)
-        } catch {
-          localStorage.removeItem('zord_access_token')
-          localStorage.removeItem('zord_refresh_token')
+    const originalRequest = error.config
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve) => {
+          refreshQueue.push(() => resolve(api.request(originalRequest)))
+        })
+      }
+
+      originalRequest._retry = true
+      isRefreshing = true
+
+      try {
+        // Cookie de refresh é enviado automaticamente pelo browser
+        await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001'}/api/v1/auth/refresh`,
+          {},
+          { withCredentials: true },
+        )
+        refreshQueue.forEach((cb) => cb(''))
+        refreshQueue = []
+        return api.request(originalRequest)
+      } catch {
+        refreshQueue = []
+        if (typeof window !== 'undefined') {
           window.location.href = '/login'
         }
+      } finally {
+        isRefreshing = false
       }
     }
     return Promise.reject(error)

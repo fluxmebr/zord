@@ -7,7 +7,7 @@ name: zord
 
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:16.3-alpine
     container_name: zord_postgres
     restart: unless-stopped
     environment:
@@ -28,10 +28,10 @@ services:
       retries: 5
 
   redis:
-    image: redis:7-alpine
+    image: redis:7.4-alpine
     container_name: zord_redis
     restart: unless-stopped
-    command: redis-server --requirepass ${REDIS_PASS} --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --requirepass ${REDIS_PASS} --maxmemory 256mb --maxmemory-policy allkeys-lru --appendonly yes
     ports:
       - "127.0.0.1:16379:6379"
     volumes:
@@ -76,7 +76,6 @@ services:
       - node.name=zord-node
       - discovery.type=single-node
       - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${OPENSEARCH_PASS}
-      - plugins.security.disabled=true
       - OPENSEARCH_JAVA_OPTS=-Xms256m -Xmx256m
     ports:
       - "127.0.0.1:19200:9200"

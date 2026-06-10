@@ -6,6 +6,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import { Logger } from 'nestjs-pino'
 import helmet from 'helmet'
 import * as compression from 'compression'
+import * as cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter'
 import { ResponseInterceptor } from './common/interceptors/response.interceptor'
@@ -20,6 +21,9 @@ async function bootstrap() {
   // Logger
   app.useLogger(app.get(Logger))
 
+  // Cookie parser (necessário para ler httpOnly cookies no refresh)
+  app.use(cookieParser())
+
   // Security
   app.use(helmet({
     contentSecurityPolicy: nodeEnv === 'production',
@@ -27,12 +31,24 @@ async function bootstrap() {
   }))
   app.use(compression())
 
-  // CORS
+  // CORS — whitelist explícito, sem wildcard
+  const allowedOrigins = [
+    configService.get<string>('APP_URL', 'http://localhost:3000'),
+    'https://zord.pro',
+    'https://www.zord.pro',
+  ].filter(Boolean)
+
   app.enableCors({
-    origin: configService.get<string>('APP_URL', 'http://localhost:3000'),
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-ID'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Tenant-ID', 'X-Device-ID'],
   })
 
   // Versioning
