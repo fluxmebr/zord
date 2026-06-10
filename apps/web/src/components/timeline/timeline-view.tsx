@@ -52,8 +52,8 @@ const EVENT_TYPES = ['ALL', 'ENTITY_LINKED', 'ENTITY_CREATED', 'EVIDENCE_UPLOADE
 function groupByDate(events: typeof MOCK_EVENTS) {
   const groups: Record<string, typeof MOCK_EVENTS> = {}
   for (const ev of events) {
-    if (!groups[ev.date]) groups[ev.date] = []
-    groups[ev.date].push(ev)
+    const bucket = groups[ev.date] ?? (groups[ev.date] = [])
+    bucket.push(ev)
   }
   return groups
 }
