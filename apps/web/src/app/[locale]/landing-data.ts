@@ -22,6 +22,7 @@ export interface LandingContent {
     subtitle: string
     complexityLabels: [string, string, string]
     tabs: { dashboard: string; vault: string; graph: string; timeline: string; hypothesis: string; ops: string }
+    panels: DemoPanels
   }
   modules: {
     label: string
@@ -58,6 +59,92 @@ export interface LandingContent {
   footer: { copyright: string; classification: string }
 }
 
+interface DemoPanels {
+  liveBadge: string
+  severity: { critical: string; high: string; medium: string; low: string; info: string }
+  classification: { secret: string; confidential: string; ultraSecret: string }
+  status: { critical: string; high: string; medium: string }
+  dashboard: {
+    title: string
+    stats: [string, string, string, string]
+    activityLabel: string
+    users: [string, string, string, string, string, string]
+    activity: [string, string, string, string, string, string]
+    alertsLabel: string
+    alerts: [string, string, string, string, string, string]
+  }
+  vault: {
+    title: string
+    badge: string
+    headers: [string, string, string, string, string, string]
+    types: { pdf: string; audio: string; image: string; sheet: string; data: string }
+    integrityOk: string
+    integrityPending: string
+    detailLabel: string
+    detailKeys: [string, string, string, string, string]
+    collectedByValue: string
+    custodyLabel: string
+    custodyActions: [string, string, string]
+    custodyBy: [string, string, string]
+  }
+  graph: {
+    title: string
+    badge: string
+    operationWord: string
+    edges: [string, string, string, string, string]
+    suspectLabel: string
+    nodeOrg: string
+    nodeTransfers: string
+    nodeFinancial: string
+    nodeLocation: string
+    nodeCompany: string
+    riskLabel: string
+    riskLevel: string
+    statsLine: string
+    overlay: [string, string, string]
+  }
+  timeline: {
+    title: string
+    badge: string
+    axis: string[]
+    tracks: [string, string, string, string]
+    commEvents: [string, string, string, string, string]
+    finEvents: [string, string, string, string]
+    moveEvents: [string, string, string]
+    docEvents: [string, string, string, string, string]
+    correlationLabel: string
+    correlationText: string
+  }
+  hypothesis: {
+    title: string
+    badge: string
+    items: [string, string, string, string]
+    corroborate: string
+    contradict: string
+    total: string
+    aiLabel: string
+    aiTextBold: string
+    aiText: string
+    gapsLabel: string
+    gaps: [string, string, string]
+    recommendationLabel: string
+    recommendationText: string
+  }
+  ops: {
+    title: string
+    badge: string
+    stats: [string, string, string, string]
+    operationsLabel: string
+    names: [string, string, string]
+    tags: [string[], string[], string[]]
+    last: [string, string, string]
+    trustScore: string
+    analysts: string
+    feedLabel: string
+    feed: [string, string, string, string, string, string]
+  }
+}
+
 const pt: LandingContent = {
   nav: { access: 'Acessar Sistema', demo: 'Solicitar Demo' },
   hero: {
@@ -91,6 +178,117 @@ const pt: LandingContent = {
     subtitle: 'Seis cenários reais · do painel básico ao centro de operações multi-investigação. Cada visualização reflete a interface real do ZORD.',
     complexityLabels: ['SIMPLES', 'INTERMEDIÁRIO', 'AVANÇADO'],
     tabs: { dashboard: 'Painel', vault: 'Evidências', graph: 'Grafo', timeline: 'Timeline', hypothesis: 'Hipóteses', ops: 'Operações' },
+    panels: {
+      liveBadge: 'AO VIVO',
+      severity: { critical: 'CRÍTICO', high: 'ALTO', medium: 'MÉDIO', low: 'BAIXO', info: 'INFO' },
+      classification: { secret: 'SECRETO', confidential: 'CONFIDENCIAL', ultraSecret: 'ULTRA SEC.' },
+      status: { critical: 'CRÍTICA', high: 'ALTA', medium: 'MÉDIA' },
+      dashboard: {
+        title: 'ZORD INTELLIGENCE · PAINEL DE CONTROLE',
+        stats: ['Investigações Ativas', 'Entidades Mapeadas', 'Evidências no Vault', 'Alertas Críticos'],
+        activityLabel: 'Atividade Recente',
+        users: ['LEVY, A.', 'COHEN, R.', 'IA ENGINE', 'RONEN, S.', 'SISTEMA', 'LEVY, A.'],
+        activity: [
+          'Adicionou evidência DOC-2024-089 → Operação Nighthawk',
+          'Entidade "MIRKA CAPITAL" vinculada a 3 investigações ativas',
+          'Hipótese H1 atualizada para 94% · novos padrões financeiros detectados',
+          'Relatório tático exportado · CLASSIFICADO · Operação Alfa',
+          'Gap temporal detectado: 47 dias sem eventos na Operação Tempestade',
+          'Nova entidade cadastrada: KARIM VORONOV · risco EXTREMO (89/100)',
+        ],
+        alertsLabel: 'Alertas Ativos',
+        alerts: [
+          'Movimentação $350k detectada',
+          'Entidade em 3 países simultâneos',
+          'Documento modificado pós-lacre',
+          'Padrão de VPN nova detectado',
+          'Gap temporal > 30 dias',
+          'Relatório semanal gerado',
+        ],
+      },
+      vault: {
+        title: 'COFRE DE EVIDÊNCIAS · OPERAÇÃO NIGHTHAWK',
+        badge: 'CIFRADO AES-256',
+        headers: ['ID', 'NOME', 'TIPO', 'TAMANHO', 'CLASSIF.', 'CUSTÓDIA'],
+        types: { pdf: 'PDF', audio: 'ÁUDIO', image: 'IMAGEM', sheet: 'PLANILHA', data: 'DADOS' },
+        integrityOk: '✓ ÍNTEGRA',
+        integrityPending: '⚠ PENDENTE',
+        detailLabel: 'Detalhes · EVD-001',
+        detailKeys: ['Arquivo', 'Hash SHA-256', 'Coletado em', 'Coletado por', 'Caso'],
+        collectedByValue: 'LEVY, Ariel (ANALISTA)',
+        custodyLabel: 'Cadeia de Custódia',
+        custodyActions: ['Coleta em campo', 'Transferência ao vault', 'Análise forense'],
+        custodyBy: ['LEVY, A.', 'SISTEMA', 'COHEN, R.'],
+      },
+      graph: {
+        title: 'OPERAÇÃO NIGHTHAWK · ENTITY RELATIONSHIP GRAPH',
+        badge: 'CRÍTICO',
+        operationWord: 'OPERAÇÃO',
+        edges: ['FINANCIA', 'DIRIGE', 'LOCALIZADO', 'CONTROLA', 'SUSPEITO PRIMÁRIO'],
+        suspectLabel: 'SUSPEITO PRINCIPAL',
+        nodeOrg: 'ORGANIZAÇÃO',
+        nodeTransfers: 'TRANSFERÊNCIAS',
+        nodeFinancial: 'FINANCEIRO',
+        nodeLocation: 'LOCALIZAÇÃO',
+        nodeCompany: 'EMPRESA',
+        riskLabel: 'RISCO GERAL',
+        riskLevel: 'EXTREMO',
+        statsLine: '18 PESSOAS · 27 ORG. · 14 LOCAIS · 153 DOC.',
+        overlay: ['Entidades', 'Conexões', 'Evidências'],
+      },
+      timeline: {
+        title: 'OPERAÇÃO NIGHTHAWK · TIMELINE ENGINE',
+        badge: 'ABR→MAI 2024',
+        axis: ['10 ABR', '15 ABR', '20 ABR', '25 ABR', '30 ABR', '05 MAI', '10 MAI', '15 MAI', '20 MAI'],
+        tracks: ['COMUNICAÇÃO', 'FINANCEIRO', 'DESLOCAMENTO', 'DOCUMENTOS'],
+        commEvents: ['Chamada Cript.', 'Email', 'Msg Telegram', 'Chamada VPN', 'Mensagem'],
+        finEvents: ['Wire $85k', 'Saque', 'Wire $350k', 'Depósito'],
+        moveEvents: ['Dubai → Istambul', 'Hotel', 'Voo MIA→HKG'],
+        docEvents: ['Contrato', 'Doc Modificado', 'Arquivo Deletado', 'Novo Contrato', 'PDF Exportado'],
+        correlationLabel: 'CORRELAÇÃO DETECTADA PELA IA',
+        correlationText: 'Padrão identificado: transferências financeiras de alto valor (≥$100k) ocorrem sistematicamente 24-48h após comunicações criptografadas com origem Dubai. Probabilidade de lavagem de dinheiro: ',
+      },
+      hypothesis: {
+        title: 'HYPOTHESIS ENGINE · ANÁLISE COMPARATIVA',
+        badge: 'IA ATIVA',
+        items: [
+          'Lavagem Internacional de $4.2M',
+          'Rede de Influência · Setor Financeiro',
+          'Contrabando Via Porto de Dubai',
+          'Fraude em Contratos Governamentais',
+        ],
+        corroborate: 'evidências corroboram',
+        contradict: 'contradizem',
+        total: 'total',
+        aiLabel: 'Análise da IA',
+        aiTextBold: 'H1 é a hipótese dominante.',
+        aiText: ' As transferências de USD 350k (30 ABR) e USD 85k (15 ABR) correlacionam com comunicações criptografadas detectadas 24-48h antes, via nó Dubai. Padrão consistente com tipologia FATF de layering.',
+        gapsLabel: 'Gaps Detectados',
+        gaps: ['Período sem eventos: 22-28 MAI', 'Entidade "BROKER-X" sem verificação', 'H3 carece de evidência física'],
+        recommendationLabel: 'Recomendação Prioritária',
+        recommendationText: 'Focar coleta em período 22-28 MAI para confirmar ou refutar H1. Solicitar MLAT para registros bancários Dubai.',
+      },
+      ops: {
+        title: 'CENTRO DE OPERAÇÕES · VISÃO MULTI-INVESTIGAÇÃO',
+        badge: '3 ATIVAS',
+        stats: ['Operações Ativas', 'Analistas Online', 'Alertas Críticos', 'H1 Trust Score'],
+        operationsLabel: 'Investigações em Curso',
+        names: ['OPERAÇÃO NIGHTHAWK', 'PROJETO ALFA', 'OPERAÇÃO TEMPESTADE'],
+        tags: [['LAVAGEM', 'TRANSNACIONAL', 'FINANCEIRO'], ['CORRUPÇÃO', 'SETOR PÚBLICO'], ['TRÁFICO', 'REGIONAL']],
+        last: ['Última ação: 14 min atrás', 'Última ação: 1h 20min atrás', 'Última ação: 3h atrás · Gap detectado'],
+        trustScore: 'trust score',
+        analysts: 'analistas',
+        feedLabel: 'Feed ao Vivo',
+        feed: [
+          'Movimentação USD 350k confirmada · conta Suíça',
+          'Entidade VORONOV detectada em Dubai e Istambul simultaneamente',
+          'Contrato #2024-089 modificado pós-assinatura · hash alterado',
+          'Nova conexão: BLACK SEA TRADING → MIRKA CAPITAL (+$85k)',
+          'Gap temporal identificado: 22-28 MAI sem registros',
+          'Relatório parcial gerado · aguardando aprovação',
+        ],
+      },
+    },
   },
   modules: {
     label: 'Módulos',
@@ -204,6 +402,117 @@ const en: LandingContent = {
     subtitle: 'Six real scenarios · from basic dashboard to multi-investigation operations center. Each view reflects the actual ZORD interface.',
     complexityLabels: ['SIMPLE', 'INTERMEDIATE', 'ADVANCED'],
     tabs: { dashboard: 'Dashboard', vault: 'Evidence', graph: 'Graph', timeline: 'Timeline', hypothesis: 'Hypotheses', ops: 'Operations' },
+    panels: {
+      liveBadge: 'LIVE',
+      severity: { critical: 'CRITICAL', high: 'HIGH', medium: 'MEDIUM', low: 'LOW', info: 'INFO' },
+      classification: { secret: 'SECRET', confidential: 'CONFIDENTIAL', ultraSecret: 'TOP SECRET' },
+      status: { critical: 'CRITICAL', high: 'HIGH', medium: 'MEDIUM' },
+      dashboard: {
+        title: 'ZORD INTELLIGENCE · CONTROL PANEL',
+        stats: ['Active Investigations', 'Mapped Entities', 'Evidence in Vault', 'Critical Alerts'],
+        activityLabel: 'Recent Activity',
+        users: ['LEVY, A.', 'COHEN, R.', 'AI ENGINE', 'RONEN, S.', 'SYSTEM', 'LEVY, A.'],
+        activity: [
+          'Added evidence DOC-2024-089 → Operation Nighthawk',
+          'Entity "MIRKA CAPITAL" linked to 3 active investigations',
+          'Hypothesis H1 updated to 94% · new financial patterns detected',
+          'Tactical report exported · CLASSIFIED · Operation Alfa',
+          'Temporal gap detected: 47 days without events in Operation Tempest',
+          'New entity registered: KARIM VORONOV · EXTREME risk (89/100)',
+        ],
+        alertsLabel: 'Active Alerts',
+        alerts: [
+          'Movement of $350k detected',
+          'Entity in 3 countries simultaneously',
+          'Document modified post-seal',
+          'New VPN pattern detected',
+          'Temporal gap > 30 days',
+          'Weekly report generated',
+        ],
+      },
+      vault: {
+        title: 'EVIDENCE VAULT · OPERATION NIGHTHAWK',
+        badge: 'AES-256 ENCRYPTED',
+        headers: ['ID', 'NAME', 'TYPE', 'SIZE', 'CLASS.', 'CUSTODY'],
+        types: { pdf: 'PDF', audio: 'AUDIO', image: 'IMAGE', sheet: 'SHEET', data: 'DATA' },
+        integrityOk: '✓ INTACT',
+        integrityPending: '⚠ PENDING',
+        detailLabel: 'Details · EVD-001',
+        detailKeys: ['File', 'Hash SHA-256', 'Collected on', 'Collected by', 'Case'],
+        collectedByValue: 'LEVY, Ariel (ANALYST)',
+        custodyLabel: 'Chain of Custody',
+        custodyActions: ['Field collection', 'Transfer to vault', 'Forensic analysis'],
+        custodyBy: ['LEVY, A.', 'SYSTEM', 'COHEN, R.'],
+      },
+      graph: {
+        title: 'OPERATION NIGHTHAWK · ENTITY RELATIONSHIP GRAPH',
+        badge: 'CRITICAL',
+        operationWord: 'OPERATION',
+        edges: ['FINANCES', 'DIRECTS', 'LOCATED', 'CONTROLS', 'PRIMARY SUSPECT'],
+        suspectLabel: 'PRIMARY SUSPECT',
+        nodeOrg: 'ORGANIZATION',
+        nodeTransfers: 'TRANSFERS',
+        nodeFinancial: 'FINANCIAL',
+        nodeLocation: 'LOCATION',
+        nodeCompany: 'COMPANY',
+        riskLabel: 'OVERALL RISK',
+        riskLevel: 'EXTREME',
+        statsLine: '18 PEOPLE · 27 ORG. · 14 PLACES · 153 DOC.',
+        overlay: ['Entities', 'Connections', 'Evidence'],
+      },
+      timeline: {
+        title: 'OPERATION NIGHTHAWK · TIMELINE ENGINE',
+        badge: 'APR→MAY 2024',
+        axis: ['10 APR', '15 APR', '20 APR', '25 APR', '30 APR', '05 MAY', '10 MAY', '15 MAY', '20 MAY'],
+        tracks: ['COMMUNICATION', 'FINANCIAL', 'MOVEMENT', 'DOCUMENTS'],
+        commEvents: ['Encrypted Call', 'Email', 'Telegram Msg', 'VPN Call', 'Message'],
+        finEvents: ['Wire $85k', 'Withdrawal', 'Wire $350k', 'Deposit'],
+        moveEvents: ['Dubai → Istanbul', 'Hotel', 'Flight MIA→HKG'],
+        docEvents: ['Contract', 'Modified Doc', 'Deleted File', 'New Contract', 'PDF Exported'],
+        correlationLabel: 'CORRELATION DETECTED BY AI',
+        correlationText: 'Pattern identified: high-value financial transfers (≥$100k) systematically occur 24-48h after encrypted communications originating from Dubai. Money-laundering probability: ',
+      },
+      hypothesis: {
+        title: 'HYPOTHESIS ENGINE · COMPARATIVE ANALYSIS',
+        badge: 'AI ACTIVE',
+        items: [
+          'International Laundering of $4.2M',
+          'Influence Network · Financial Sector',
+          'Smuggling Via Port of Dubai',
+          'Fraud in Government Contracts',
+        ],
+        corroborate: 'evidence corroborates',
+        contradict: 'contradict',
+        total: 'total',
+        aiLabel: 'AI Analysis',
+        aiTextBold: 'H1 is the dominant hypothesis.',
+        aiText: ' The transfers of USD 350k (30 APR) and USD 85k (15 APR) correlate with encrypted communications detected 24-48h earlier, via the Dubai node. Pattern consistent with FATF layering typology.',
+        gapsLabel: 'Detected Gaps',
+        gaps: ['Period without events: 22-28 MAY', 'Entity "BROKER-X" unverified', 'H3 lacks physical evidence'],
+        recommendationLabel: 'Priority Recommendation',
+        recommendationText: 'Focus collection on 22-28 MAY period to confirm or refute H1. Request MLAT for Dubai banking records.',
+      },
+      ops: {
+        title: 'OPERATIONS CENTER · MULTI-INVESTIGATION VIEW',
+        badge: '3 ACTIVE',
+        stats: ['Active Operations', 'Analysts Online', 'Critical Alerts', 'H1 Trust Score'],
+        operationsLabel: 'Ongoing Investigations',
+        names: ['OPERATION NIGHTHAWK', 'PROJECT ALFA', 'OPERATION TEMPEST'],
+        tags: [['LAUNDERING', 'TRANSNATIONAL', 'FINANCIAL'], ['CORRUPTION', 'PUBLIC SECTOR'], ['TRAFFICKING', 'REGIONAL']],
+        last: ['Last action: 14 min ago', 'Last action: 1h 20min ago', 'Last action: 3h ago · Gap detected'],
+        trustScore: 'trust score',
+        analysts: 'analysts',
+        feedLabel: 'Live Feed',
+        feed: [
+          'Movement of USD 350k confirmed · Swiss account',
+          'Entity VORONOV detected in Dubai and Istanbul simultaneously',
+          'Contract #2024-089 modified post-signature · hash altered',
+          'New connection: BLACK SEA TRADING → MIRKA CAPITAL (+$85k)',
+          'Temporal gap identified: 22-28 MAY without records',
+          'Partial report generated · awaiting approval',
+        ],
+      },
+    },
   },
   modules: {
     label: 'Modules',
@@ -317,6 +626,117 @@ const he: LandingContent = {
     subtitle: 'שישה תרחישים אמיתיים · מלוח הבקרה הבסיסי למרכז מבצעים רב-חקירות. כל תצוגה משקפת את הממשק האמיתי של ZORD.',
     complexityLabels: ['פשוט', 'בינוני', 'מתקדם'],
     tabs: { dashboard: 'לוח בקרה', vault: 'ראיות', graph: 'גרף', timeline: 'ציר זמן', hypothesis: 'השערות', ops: 'מבצעים' },
+    panels: {
+      liveBadge: 'בשידור חי',
+      severity: { critical: 'קריטי', high: 'גבוה', medium: 'בינוני', low: 'נמוך', info: 'מידע' },
+      classification: { secret: 'סודי', confidential: 'חסוי', ultraSecret: 'סודי ביותר' },
+      status: { critical: 'קריטית', high: 'גבוהה', medium: 'בינונית' },
+      dashboard: {
+        title: 'ZORD INTELLIGENCE · לוח בקרה',
+        stats: ['חקירות פעילות', 'ישויות ממופות', 'ראיות בכספת', 'התראות קריטיות'],
+        activityLabel: 'פעילות אחרונה',
+        users: ['LEVY, A.', 'COHEN, R.', 'מנוע AI', 'RONEN, S.', 'מערכת', 'LEVY, A.'],
+        activity: [
+          'הוסיף ראיה DOC-2024-089 ← מבצע Nighthawk',
+          'הישות "MIRKA CAPITAL" קושרה ל-3 חקירות פעילות',
+          'השערה H1 עודכנה ל-94% · זוהו דפוסים פיננסיים חדשים',
+          'דוח טקטי יוצא · מסווג · מבצע Alfa',
+          'זוהה פער זמני: 47 ימים ללא אירועים במבצע Tempest',
+          'נרשמה ישות חדשה: KARIM VORONOV · סיכון קיצוני (89/100)',
+        ],
+        alertsLabel: 'התראות פעילות',
+        alerts: [
+          'זוהתה תנועה של $350k',
+          'ישות ב-3 מדינות בו-זמנית',
+          'מסמך שונה לאחר חיתום',
+          'זוהה דפוס VPN חדש',
+          'פער זמני > 30 ימים',
+          'דוח שבועי נוצר',
+        ],
+      },
+      vault: {
+        title: 'כספת ראיות · מבצע NIGHTHAWK',
+        badge: 'מוצפן AES-256',
+        headers: ['מזהה', 'שם', 'סוג', 'גודל', 'סיווג', 'החזקה'],
+        types: { pdf: 'PDF', audio: 'אודיו', image: 'תמונה', sheet: 'גיליון', data: 'נתונים' },
+        integrityOk: '✓ תקין',
+        integrityPending: '⚠ ממתין',
+        detailLabel: 'פרטים · EVD-001',
+        detailKeys: ['קובץ', 'Hash SHA-256', 'נאסף בתאריך', 'נאסף על ידי', 'תיק'],
+        collectedByValue: 'LEVY, Ariel (אנליסט)',
+        custodyLabel: 'שרשרת החזקה',
+        custodyActions: ['איסוף בשטח', 'העברה לכספת', 'ניתוח פורנזי'],
+        custodyBy: ['LEVY, A.', 'מערכת', 'COHEN, R.'],
+      },
+      graph: {
+        title: 'מבצע NIGHTHAWK · גרף קשרי ישויות',
+        badge: 'קריטי',
+        operationWord: 'מבצע',
+        edges: ['מממן', 'מנהל', 'ממוקם', 'שולט', 'חשוד ראשי'],
+        suspectLabel: 'חשוד ראשי',
+        nodeOrg: 'ארגון',
+        nodeTransfers: 'העברות',
+        nodeFinancial: 'פיננסי',
+        nodeLocation: 'מיקום',
+        nodeCompany: 'חברה',
+        riskLabel: 'סיכון כללי',
+        riskLevel: 'קיצוני',
+        statsLine: '18 אנשים · 27 ארגונים · 14 מקומות · 153 מסמכים',
+        overlay: ['ישויות', 'קשרים', 'ראיות'],
+      },
+      timeline: {
+        title: 'מבצע NIGHTHAWK · מנוע ציר זמן',
+        badge: 'אפר←מאי 2024',
+        axis: ['10 אפר', '15 אפר', '20 אפר', '25 אפר', '30 אפר', '05 מאי', '10 מאי', '15 מאי', '20 מאי'],
+        tracks: ['תקשורת', 'פיננסי', 'תנועה', 'מסמכים'],
+        commEvents: ['שיחה מוצפנת', 'אימייל', 'הודעת Telegram', 'שיחת VPN', 'הודעה'],
+        finEvents: ['העברה $85k', 'משיכה', 'העברה $350k', 'הפקדה'],
+        moveEvents: ['Dubai ← Istanbul', 'מלון', 'טיסה MIA←HKG'],
+        docEvents: ['חוזה', 'מסמך ששונה', 'קובץ שנמחק', 'חוזה חדש', 'PDF יוצא'],
+        correlationLabel: 'קורלציה זוהתה על ידי AI',
+        correlationText: 'דפוס זוהה: העברות פיננסיות בערך גבוה (≥$100k) מתרחשות באופן שיטתי 24-48 שעות לאחר תקשורת מוצפנת שמקורה בדובאי. הסתברות להלבנת הון: ',
+      },
+      hypothesis: {
+        title: 'מנוע השערות · ניתוח השוואתי',
+        badge: 'AI פעיל',
+        items: [
+          'הלבנה בינלאומית של $4.2M',
+          'רשת השפעה · מגזר פיננסי',
+          'הברחה דרך נמל דובאי',
+          'הונאה בחוזים ממשלתיים',
+        ],
+        corroborate: 'ראיות תומכות',
+        contradict: 'סותרות',
+        total: 'סך הכל',
+        aiLabel: 'ניתוח AI',
+        aiTextBold: 'H1 היא ההשערה הדומיננטית.',
+        aiText: ' ההעברות של USD 350k (30 אפר) ו-USD 85k (15 אפר) מתואמות עם תקשורת מוצפנת שזוהתה 24-48 שעות קודם לכן, דרך צומת דובאי. דפוס עקבי עם טיפולוגיית layering של FATF.',
+        gapsLabel: 'פערים שזוהו',
+        gaps: ['תקופה ללא אירועים: 22-28 מאי', 'הישות "BROKER-X" ללא אימות', 'ל-H3 חסרה ראיה פיזית'],
+        recommendationLabel: 'המלצה בעדיפות',
+        recommendationText: 'למקד איסוף בתקופה 22-28 מאי לאישור או הפרכה של H1. לבקש MLAT לרשומות בנקאיות בדובאי.',
+      },
+      ops: {
+        title: 'מרכז מבצעים · תצוגה רב-חקירתית',
+        badge: '3 פעילות',
+        stats: ['מבצעים פעילים', 'אנליסטים מחוברים', 'התראות קריטיות', 'H1 Trust Score'],
+        operationsLabel: 'חקירות מתמשכות',
+        names: ['מבצע NIGHTHAWK', 'פרויקט ALFA', 'מבצע TEMPEST'],
+        tags: [['הלבנה', 'חוצה-גבולות', 'פיננסי'], ['שחיתות', 'מגזר ציבורי'], ['סחר', 'אזורי']],
+        last: ['פעולה אחרונה: לפני 14 דק׳', 'פעולה אחרונה: לפני 1ש׳ 20דק׳', 'פעולה אחרונה: לפני 3ש׳ · זוהה פער'],
+        trustScore: 'trust score',
+        analysts: 'אנליסטים',
+        feedLabel: 'הזנה חיה',
+        feed: [
+          'תנועה של USD 350k אושרה · חשבון שוויצרי',
+          'הישות VORONOV זוהתה בדובאי ובאיסטנבול בו-זמנית',
+          'חוזה #2024-089 שונה לאחר חתימה · hash שונה',
+          'קשר חדש: BLACK SEA TRADING ← MIRKA CAPITAL (+$85k)',
+          'זוהה פער זמני: 22-28 מאי ללא רשומות',
+          'דוח חלקי נוצר · ממתין לאישור',
+        ],
+      },
+    },
   },
   modules: {
     label: 'מודולים',
@@ -430,6 +850,117 @@ const ru: LandingContent = {
     subtitle: 'Шесть реальных сценариев · от базовой панели до многорасследовательского оперативного центра. Каждый вид отражает реальный интерфейс ZORD.',
     complexityLabels: ['ПРОСТОЙ', 'СРЕДНИЙ', 'СЛОЖНЫЙ'],
     tabs: { dashboard: 'Панель', vault: 'Улики', graph: 'Граф', timeline: 'Хронология', hypothesis: 'Гипотезы', ops: 'Операции' },
+    panels: {
+      liveBadge: 'В ЭФИРЕ',
+      severity: { critical: 'КРИТИЧНО', high: 'ВЫСОКО', medium: 'СРЕДНЕ', low: 'НИЗКО', info: 'ИНФО' },
+      classification: { secret: 'СЕКРЕТНО', confidential: 'КОНФИДЕНЦИАЛЬНО', ultraSecret: 'СОВ. СЕКРЕТНО' },
+      status: { critical: 'КРИТИЧНАЯ', high: 'ВЫСОКАЯ', medium: 'СРЕДНЯЯ' },
+      dashboard: {
+        title: 'ZORD INTELLIGENCE · ПАНЕЛЬ УПРАВЛЕНИЯ',
+        stats: ['Активные расследования', 'Картированные субъекты', 'Улик в хранилище', 'Критические оповещения'],
+        activityLabel: 'Недавняя активность',
+        users: ['LEVY, A.', 'COHEN, R.', 'AI ENGINE', 'RONEN, S.', 'СИСТЕМА', 'LEVY, A.'],
+        activity: [
+          'Добавлена улика DOC-2024-089 → Операция Nighthawk',
+          'Субъект "MIRKA CAPITAL" связан с 3 активными расследованиями',
+          'Гипотеза H1 обновлена до 94% · обнаружены новые финансовые паттерны',
+          'Тактический отчёт экспортирован · СЕКРЕТНО · Операция Alfa',
+          'Обнаружен временной пробел: 47 дней без событий в Операции Tempest',
+          'Зарегистрирован новый субъект: KARIM VORONOV · ЭКСТРЕМАЛЬНЫЙ риск (89/100)',
+        ],
+        alertsLabel: 'Активные оповещения',
+        alerts: [
+          'Обнаружено движение $350k',
+          'Субъект в 3 странах одновременно',
+          'Документ изменён после опечатывания',
+          'Обнаружен новый VPN-паттерн',
+          'Временной пробел > 30 дней',
+          'Сформирован еженедельный отчёт',
+        ],
+      },
+      vault: {
+        title: 'ХРАНИЛИЩЕ УЛИК · ОПЕРАЦИЯ NIGHTHAWK',
+        badge: 'ШИФРОВАНИЕ AES-256',
+        headers: ['ID', 'ИМЯ', 'ТИП', 'РАЗМЕР', 'КЛАСС.', 'ХРАНЕНИЕ'],
+        types: { pdf: 'PDF', audio: 'АУДИО', image: 'ИЗОБР.', sheet: 'ТАБЛИЦА', data: 'ДАННЫЕ' },
+        integrityOk: '✓ ЦЕЛО',
+        integrityPending: '⚠ ОЖИДАНИЕ',
+        detailLabel: 'Детали · EVD-001',
+        detailKeys: ['Файл', 'Hash SHA-256', 'Собрано', 'Собрал', 'Дело'],
+        collectedByValue: 'LEVY, Ariel (АНАЛИТИК)',
+        custodyLabel: 'Цепочка хранения',
+        custodyActions: ['Сбор в поле', 'Передача в хранилище', 'Криминалистический анализ'],
+        custodyBy: ['LEVY, A.', 'СИСТЕМА', 'COHEN, R.'],
+      },
+      graph: {
+        title: 'ОПЕРАЦИЯ NIGHTHAWK · ГРАФ СВЯЗЕЙ СУБЪЕКТОВ',
+        badge: 'КРИТИЧНО',
+        operationWord: 'ОПЕРАЦИЯ',
+        edges: ['ФИНАНСИРУЕТ', 'РУКОВОДИТ', 'РАСПОЛОЖЕН', 'КОНТРОЛИРУЕТ', 'ОСНОВНОЙ ПОДОЗР.'],
+        suspectLabel: 'ОСНОВНОЙ ПОДОЗРЕВАЕМЫЙ',
+        nodeOrg: 'ОРГАНИЗАЦИЯ',
+        nodeTransfers: 'ПЕРЕВОДЫ',
+        nodeFinancial: 'ФИНАНСЫ',
+        nodeLocation: 'ЛОКАЦИЯ',
+        nodeCompany: 'КОМПАНИЯ',
+        riskLabel: 'ОБЩИЙ РИСК',
+        riskLevel: 'ЭКСТРЕМАЛЬНЫЙ',
+        statsLine: '18 ЛИЦ · 27 ОРГ. · 14 МЕСТ · 153 ДОК.',
+        overlay: ['Субъекты', 'Связи', 'Улики'],
+      },
+      timeline: {
+        title: 'ОПЕРАЦИЯ NIGHTHAWK · ДВИЖОК ХРОНОЛОГИИ',
+        badge: 'АПР→МАЙ 2024',
+        axis: ['10 АПР', '15 АПР', '20 АПР', '25 АПР', '30 АПР', '05 МАЙ', '10 МАЙ', '15 МАЙ', '20 МАЙ'],
+        tracks: ['СВЯЗЬ', 'ФИНАНСЫ', 'ПЕРЕМЕЩЕНИЕ', 'ДОКУМЕНТЫ'],
+        commEvents: ['Шифр. звонок', 'Email', 'Telegram', 'VPN-звонок', 'Сообщение'],
+        finEvents: ['Перевод $85k', 'Снятие', 'Перевод $350k', 'Депозит'],
+        moveEvents: ['Дубай → Стамбул', 'Отель', 'Рейс MIA→HKG'],
+        docEvents: ['Контракт', 'Изм. документ', 'Удал. файл', 'Новый контракт', 'PDF экспорт'],
+        correlationLabel: 'КОРРЕЛЯЦИЯ ОБНАРУЖЕНА ИИ',
+        correlationText: 'Выявлен паттерн: финансовые переводы высокой стоимости (≥$100k) систематически происходят через 24-48ч после зашифрованных коммуникаций из Дубая. Вероятность отмывания денег: ',
+      },
+      hypothesis: {
+        title: 'ДВИЖОК ГИПОТЕЗ · СРАВНИТЕЛЬНЫЙ АНАЛИЗ',
+        badge: 'ИИ АКТИВЕН',
+        items: [
+          'Международное отмывание $4.2M',
+          'Сеть влияния · Финансовый сектор',
+          'Контрабанда через порт Дубая',
+          'Мошенничество в госконтрактах',
+        ],
+        corroborate: 'улик подтверждают',
+        contradict: 'опровергают',
+        total: 'всего',
+        aiLabel: 'Анализ ИИ',
+        aiTextBold: 'H1 — доминирующая гипотеза.',
+        aiText: ' Переводы USD 350k (30 АПР) и USD 85k (15 АПР) коррелируют с зашифрованными коммуникациями, обнаруженными за 24-48ч до этого, через узел Дубай. Паттерн соответствует типологии layering FATF.',
+        gapsLabel: 'Обнаруженные пробелы',
+        gaps: ['Период без событий: 22-28 МАЙ', 'Субъект "BROKER-X" не верифицирован', 'H3 не хватает физических улик'],
+        recommendationLabel: 'Приоритетная рекомендация',
+        recommendationText: 'Сосредоточить сбор на периоде 22-28 МАЙ для подтверждения или опровержения H1. Запросить MLAT для банковских записей Дубая.',
+      },
+      ops: {
+        title: 'ЦЕНТР ОПЕРАЦИЙ · МУЛЬТИ-РАССЛЕДОВАТЕЛЬСКИЙ ОБЗОР',
+        badge: '3 АКТИВНЫХ',
+        stats: ['Активные операции', 'Аналитиков онлайн', 'Критические оповещения', 'H1 Trust Score'],
+        operationsLabel: 'Текущие расследования',
+        names: ['ОПЕРАЦИЯ NIGHTHAWK', 'ПРОЕКТ ALFA', 'ОПЕРАЦИЯ TEMPEST'],
+        tags: [['ОТМЫВАНИЕ', 'ТРАНСНАЦ.', 'ФИНАНСЫ'], ['КОРРУПЦИЯ', 'ГОССЕКТОР'], ['ТРАФИК', 'РЕГИОН.']],
+        last: ['Последнее действие: 14 мин назад', 'Последнее действие: 1ч 20мин назад', 'Последнее действие: 3ч назад · Пробел обнаружен'],
+        trustScore: 'trust score',
+        analysts: 'аналитиков',
+        feedLabel: 'Живая лента',
+        feed: [
+          'Движение USD 350k подтверждено · швейцарский счёт',
+          'Субъект VORONOV обнаружен в Дубае и Стамбуле одновременно',
+          'Контракт #2024-089 изменён после подписания · hash изменён',
+          'Новая связь: BLACK SEA TRADING → MIRKA CAPITAL (+$85k)',
+          'Выявлен временной пробел: 22-28 МАЙ без записей',
+          'Сформирован частичный отчёт · ожидает утверждения',
+        ],
+      },
+    },
   },
   modules: {
     label: 'Модули',
