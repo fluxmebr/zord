@@ -201,7 +201,7 @@ export default function LandingPage() {
   const params = useParams()
   const locale = (params?.locale as string) ?? 'he'
   const [activeModule, setActiveModule] = useState(0)
-  const [demoTab, setDemoTab] = useState<'graph' | 'timeline' | 'flow'>('graph')
+  const [demoTab, setDemoTab] = useState<'dashboard' | 'vault' | 'graph' | 'timeline' | 'hypothesis' | 'ops'>('dashboard')
   const [pulse, setPulse] = useState(false)
 
   useEffect(() => {
@@ -299,57 +299,205 @@ export default function LandingPage() {
       </section>
 
       {/* DEMO VISUAL */}
-      <section className="border-b border-zord-border py-20">
+      <section className="border-b border-zord-border bg-gradient-to-b from-zord-bg via-zord-muted/5 to-zord-bg py-20">
         <div className="mx-auto max-w-7xl px-4">
-          <div className="mb-8 text-center">
+          <div className="mb-10 text-center">
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Demonstração Interativa</span>
-            <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Veja o Sistema em Ação</h2>
+            <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Explore o Sistema em Profundidade</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-zord-text-muted">
-              Visualizações reais do ZORD — como analistas mapeiam redes criminosas, constroem timelines e geram fluxos investigativos.
+              Seis cenários reais — do painel básico ao centro de operações multi-investigação. Cada visualização reflete a interface real do ZORD.
             </p>
           </div>
 
+          {/* Complexity bar */}
+          <div className="mb-2 hidden grid-cols-3 text-center sm:grid">
+            {['SIMPLES', 'INTERMEDIÁRIO', 'AVANÇADO'].map((l) => (
+              <div key={l} className="text-[9px] font-medium tracking-widest text-zord-text-muted/50">{l}</div>
+            ))}
+          </div>
           {/* Tab selector */}
-          <div className="mb-6 flex justify-center gap-2">
+          <div className="relative mb-8 grid grid-cols-3 gap-1 rounded-lg border border-zord-border bg-zord-surface/30 p-1 sm:grid-cols-6">
+            <div className="absolute inset-y-1 hidden w-px bg-zord-border/50 sm:block" style={{ left: 'calc(33.33% - 0.5px)' }} />
+            <div className="absolute inset-y-1 hidden w-px bg-zord-border/50 sm:block" style={{ left: 'calc(66.66% - 0.5px)' }} />
             {([
-              { id: 'graph', label: 'Knowledge Graph', icon: '◉' },
-              { id: 'timeline', label: 'Timeline Engine', icon: '⊞' },
-              { id: 'flow', label: 'Fluxo Investigativo', icon: '⬡' },
+              { id: 'dashboard', label: 'Painel', icon: '⊞', color: 'text-blue-400' },
+              { id: 'vault',     label: 'Evidências', icon: '⊟', color: 'text-yellow-400' },
+              { id: 'graph',     label: 'Grafo', icon: '◉', color: 'text-purple-400' },
+              { id: 'timeline',  label: 'Timeline', icon: '⬡', color: 'text-green-400' },
+              { id: 'hypothesis',label: 'Hipóteses', icon: '◈', color: 'text-orange-400' },
+              { id: 'ops',       label: 'Operações', icon: '⬢', color: 'text-red-400' },
             ] as const).map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setDemoTab(tab.id)}
-                className={`flex items-center gap-2 rounded border px-4 py-2 text-xs font-medium transition-all ${
+                className={`flex flex-col items-center gap-1 rounded px-2 py-2 text-[10px] font-medium transition-all sm:flex-row sm:justify-center sm:gap-1.5 ${
                   demoTab === tab.id
-                    ? 'border-zord-accent bg-zord-accent/10 text-zord-accent'
-                    : 'border-zord-border text-zord-text-muted hover:border-zord-accent/50'
+                    ? `${tab.color} border border-current/30 bg-current/5`
+                    : 'text-zord-text-muted hover:text-zord-text'
                 }`}
               >
-                <span>{tab.icon}</span>
-                <span className="hidden sm:inline">{tab.label}</span>
+                <span className={`text-base sm:text-xs ${demoTab === tab.id ? tab.color : ''}`}>{tab.icon}</span>
+                <span className="leading-tight">{tab.label}</span>
               </button>
             ))}
           </div>
 
-          {/* KNOWLEDGE GRAPH */}
-          {demoTab === 'graph' && (
-            <div className="panel overflow-hidden">
-              {/* Header bar */}
-              <div className="flex items-center justify-between border-b border-zord-border bg-zord-muted/30 px-4 py-2">
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
+          {/* ── PAINEL PRINCIPAL ── */}
+          {demoTab === 'dashboard' && (
+            <DemoShell title="ZORD INTELLIGENCE — PAINEL DE CONTROLE" badge="AO VIVO" badgeColor="text-green-400" pulse={pulse}>
+              {/* Stats row */}
+              <div className="grid grid-cols-2 gap-3 border-b border-zord-border p-4 sm:grid-cols-4">
+                {[
+                  { v: '12', l: 'Investigações Ativas', c: 'text-zord-accent', bar: 'bg-zord-accent' },
+                  { v: '847', l: 'Entidades Mapeadas', c: 'text-purple-400', bar: 'bg-purple-400' },
+                  { v: '2.341', l: 'Evidências no Vault', c: 'text-yellow-400', bar: 'bg-yellow-400' },
+                  { v: '8', l: 'Alertas Críticos', c: 'text-red-400', bar: 'bg-red-400' },
+                ].map((s) => (
+                  <div key={s.l} className="rounded border border-zord-border bg-zord-surface/50 p-3">
+                    <div className={`font-mono text-2xl font-black ${s.c}`}>{s.v}</div>
+                    <div className="mt-1 text-[10px] text-zord-text-muted">{s.l}</div>
+                    <div className="mt-2 h-0.5 w-full rounded bg-zord-border">
+                      <div className={`h-full rounded ${s.bar} opacity-60`} style={{ width: '70%' }} />
+                    </div>
                   </div>
-                  <span className="text-[10px] font-mono text-zord-text-muted">OPERATION NIGHTHAWK — ENTITY RELATIONSHIP GRAPH</span>
+                ))}
+              </div>
+              <div className="grid grid-cols-1 gap-0 sm:grid-cols-3">
+                {/* Activity feed */}
+                <div className="col-span-2 border-r border-zord-border p-4">
+                  <div className="mb-3 text-[9px] font-bold uppercase tracking-widest text-zord-text-muted">Atividade Recente</div>
+                  {[
+                    { time: '14:38', user: 'LEVY, A.', action: 'Adicionou evidência DOC-2024-089 → Operação Nighthawk', color: 'text-yellow-400', icon: '⊟' },
+                    { time: '14:35', user: 'COHEN, R.', action: 'Entidade "MIRKA CAPITAL" vinculada a 3 investigações ativas', color: 'text-purple-400', icon: '◈' },
+                    { time: '14:31', user: 'IA ENGINE', action: 'Hipótese H1 atualizada para 94% — novos padrões financeiros detectados', color: 'text-zord-accent', icon: '⬢' },
+                    { time: '14:22', user: 'RONEN, S.', action: 'Relatório tático exportado — CLASSIFICADO — Operação Alfa', color: 'text-green-400', icon: '⊜' },
+                    { time: '14:15', user: 'SISTEMA', action: 'Gap temporal detectado: 47 dias sem eventos na Operação Tempestade', color: 'text-orange-400', icon: '◉' },
+                    { time: '13:58', user: 'LEVY, A.', action: 'Nova entidade cadastrada: KARIM VORONOV — risco EXTREMO (89/100)', color: 'text-red-400', icon: '⊗' },
+                  ].map((ev, i) => (
+                    <div key={i} className="flex gap-3 border-b border-zord-border/30 py-2 last:border-0">
+                      <span className={`mt-0.5 shrink-0 text-sm ${ev.color}`}>{ev.icon}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[9px] text-zord-text-muted">{ev.time}</span>
+                          <span className={`text-[9px] font-bold ${ev.color}`}>{ev.user}</span>
+                        </div>
+                        <p className="text-[10px] leading-snug text-zord-text-muted">{ev.action}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className={`h-1.5 w-1.5 rounded-full ${pulse ? 'bg-zord-accent' : 'bg-zord-accent/30'} transition-colors`} />
-                  <span className="text-[9px] font-mono text-zord-accent">ACTIVE</span>
-                  <span className="rounded border border-red-700/50 bg-red-950/30 px-1.5 py-0.5 text-[9px] font-bold uppercase text-red-400">CRÍTICO</span>
+                {/* Alert panel */}
+                <div className="p-4">
+                  <div className="mb-3 text-[9px] font-bold uppercase tracking-widest text-zord-text-muted">Alertas Ativos</div>
+                  {[
+                    { sev: 'CRÍTICO', title: 'Movimentação $350k detectada', time: '14:31', c: 'border-red-700/60 bg-red-950/20 text-red-400' },
+                    { sev: 'CRÍTICO', title: 'Entidade em 3 países simultâneos', time: '13:44', c: 'border-red-700/60 bg-red-950/20 text-red-400' },
+                    { sev: 'ALTO', title: 'Documento modificado pós-lacre', time: '12:15', c: 'border-orange-700/60 bg-orange-950/20 text-orange-400' },
+                    { sev: 'ALTO', title: 'Padrão de VPN nova detectado', time: '11:50', c: 'border-orange-700/60 bg-orange-950/20 text-orange-400' },
+                    { sev: 'MÉDIO', title: 'Gap temporal > 30 dias', time: '10:22', c: 'border-yellow-700/60 bg-yellow-950/20 text-yellow-400' },
+                    { sev: 'INFO', title: 'Relatório semanal gerado', time: '09:00', c: 'border-zord-border bg-zord-surface/30 text-zord-text-muted' },
+                  ].map((a, i) => (
+                    <div key={i} className={`mb-2 rounded border p-2 ${a.c}`}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[8px] font-bold uppercase">{a.sev}</span>
+                        <span className="font-mono text-[8px] opacity-60">{a.time}</span>
+                      </div>
+                      <p className="mt-0.5 text-[9px] leading-snug">{a.title}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
+            </DemoShell>
+          )}
+
+          {/* ── COFRE DE EVIDÊNCIAS ── */}
+          {demoTab === 'vault' && (
+            <DemoShell title="COFRE DE EVIDÊNCIAS — OPERAÇÃO NIGHTHAWK" badge="CIFRADO AES-256" badgeColor="text-green-400" pulse={pulse}>
+              <div className="grid grid-cols-1 sm:grid-cols-5">
+                {/* File list */}
+                <div className="col-span-3 overflow-x-auto border-r border-zord-border">
+                  <table className="w-full min-w-[500px] text-[10px]">
+                    <thead>
+                      <tr className="border-b border-zord-border bg-zord-surface/50">
+                        {['ID', 'NOME', 'TIPO', 'TAMANHO', 'CLASSIF.', 'CUSTÓDIA'].map((h) => (
+                          <th key={h} className="px-3 py-2 text-left font-mono font-bold text-zord-text-muted">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { id: 'EVD-001', name: 'contrato_black_sea_2024.pdf', type: 'PDF', size: '2.4 MB', cls: 'SECRETO', chain: true, sel: true, color: 'text-yellow-400' },
+                        { id: 'EVD-002', name: 'audio_interceptado_24abr.mp3', type: 'ÁUDIO', size: '18.7 MB', cls: 'CONFIDENCIAL', chain: true, sel: false, color: 'text-blue-400' },
+                        { id: 'EVD-003', name: 'foto_vigilancia_dubai_03.jpg', type: 'IMAGEM', size: '4.1 MB', cls: 'CONFIDENCIAL', chain: true, sel: false, color: 'text-blue-400' },
+                        { id: 'EVD-004', name: 'wire_transfer_85k_mirka.xlsx', type: 'PLANILHA', size: '891 KB', cls: 'SECRETO', chain: true, sel: false, color: 'text-yellow-400' },
+                        { id: 'EVD-005', name: 'passaporte_voronov_scan.pdf', type: 'PDF', size: '1.2 MB', cls: 'SECRETO', chain: false, sel: false, color: 'text-red-400' },
+                        { id: 'EVD-006', name: 'historico_celular_abr2024.csv', type: 'DADOS', size: '3.8 MB', cls: 'SECRETO', chain: true, sel: false, color: 'text-yellow-400' },
+                        { id: 'EVD-007', name: 'imagem_satelite_armazem.tiff', type: 'IMAGEM', size: '22.1 MB', cls: 'ULTRA SEC.', chain: true, sel: false, color: 'text-red-400' },
+                      ].map((f) => (
+                        <tr key={f.id} className={`border-b border-zord-border/30 transition-colors hover:bg-zord-surface/30 ${f.sel ? 'bg-zord-accent/5' : ''}`}>
+                          <td className="px-3 py-2 font-mono text-zord-text-muted">{f.id}</td>
+                          <td className={`px-3 py-2 font-mono ${f.sel ? 'font-bold text-zord-text' : 'text-zord-text-muted'}`}>{f.name}</td>
+                          <td className={`px-3 py-2 font-mono ${f.color}`}>{f.type}</td>
+                          <td className="px-3 py-2 font-mono text-zord-text-muted">{f.size}</td>
+                          <td className="px-3 py-2">
+                            <span className={`rounded border px-1.5 py-0.5 text-[8px] font-bold ${f.cls === 'ULTRA SEC.' ? 'border-red-700/60 bg-red-950/20 text-red-400' : f.cls === 'SECRETO' ? 'border-yellow-700/60 bg-yellow-950/20 text-yellow-400' : 'border-blue-700/60 bg-blue-950/20 text-blue-400'}`}>
+                              {f.cls}
+                            </span>
+                          </td>
+                          <td className="px-3 py-2">
+                            {f.chain
+                              ? <span className="font-mono text-[9px] text-green-400">✓ ÍNTEGRA</span>
+                              : <span className="font-mono text-[9px] text-red-400">⚠ PENDENTE</span>}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* File detail */}
+                <div className="col-span-2 p-4">
+                  <div className="mb-3 text-[9px] font-bold uppercase tracking-widest text-zord-text-muted">Detalhes — EVD-001</div>
+                  <div className="space-y-2">
+                    {[
+                      { k: 'Arquivo', v: 'contrato_black_sea_2024.pdf' },
+                      { k: 'Hash SHA-256', v: 'a8f3c91d2e...4b7f' },
+                      { k: 'Coletado em', v: '14 ABR 2024 09:22 UTC' },
+                      { k: 'Coletado por', v: 'LEVY, Ariel (ANALISTA)' },
+                      { k: 'Caso', v: 'OP-NIGHTHAWK-2024' },
+                    ].map(({ k, v }) => (
+                      <div key={k} className="rounded border border-zord-border bg-zord-surface/30 px-3 py-2">
+                        <div className="text-[8px] uppercase tracking-wider text-zord-text-muted">{k}</div>
+                        <div className="mt-0.5 font-mono text-[9px] text-zord-text">{v}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4">
+                    <div className="mb-2 text-[9px] font-bold uppercase tracking-widest text-zord-text-muted">Cadeia de Custódia</div>
+                    {[
+                      { step: 1, action: 'Coleta em campo', by: 'LEVY, A.', date: '14 ABR 09:22', ok: true },
+                      { step: 2, action: 'Transferência ao vault', by: 'SISTEMA', date: '14 ABR 09:23', ok: true },
+                      { step: 3, action: 'Análise forense', by: 'COHEN, R.', date: '15 ABR 11:40', ok: true },
+                    ].map((s) => (
+                      <div key={s.step} className="mb-1 flex gap-2">
+                        <div className="flex flex-col items-center">
+                          <div className={`h-4 w-4 rounded-full border text-center text-[7px] leading-4 font-bold ${s.ok ? 'border-green-600 bg-green-950/30 text-green-400' : 'border-zord-border text-zord-text-muted'}`}>{s.step}</div>
+                          {s.step < 3 && <div className="w-px flex-1 bg-zord-border/40" />}
+                        </div>
+                        <div className="pb-2">
+                          <div className="text-[9px] font-medium text-zord-text">{s.action}</div>
+                          <div className="font-mono text-[8px] text-zord-text-muted">{s.by} · {s.date}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </DemoShell>
+          )}
+
+          {/* ── GRAFO DE ENTIDADES ── */}
+          {demoTab === 'graph' && (
+            <DemoShell title="OPERAÇÃO NIGHTHAWK — ENTITY RELATIONSHIP GRAPH" badge="CRÍTICO" badgeColor="text-red-400" pulse={pulse}>
 
               {/* Graph canvas */}
               <div className="relative h-80 overflow-hidden bg-[radial-gradient(ellipse_at_center,rgba(0,212,255,0.03)_0%,transparent_70%)] sm:h-96">
@@ -441,23 +589,12 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-            </div>
+            </DemoShell>
           )}
 
           {/* TIMELINE */}
           {demoTab === 'timeline' && (
-            <div className="panel overflow-hidden">
-              <div className="flex items-center justify-between border-b border-zord-border bg-zord-muted/30 px-4 py-2">
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
-                  </div>
-                  <span className="text-[10px] font-mono text-zord-text-muted">OPERATION NIGHTHAWK — TIMELINE ENGINE</span>
-                </div>
-                <span className="text-[9px] font-mono text-zord-text-muted">ABR 2024 → MAI 2024</span>
-              </div>
+            <DemoShell title="OPERAÇÃO NIGHTHAWK — TIMELINE ENGINE" badge="ABR→MAI 2024" badgeColor="text-green-400" pulse={pulse}>
 
               <div className="p-4">
                 {/* Timeline axis */}
@@ -548,128 +685,184 @@ export default function LandingPage() {
                   </p>
                 </div>
               </div>
-            </div>
+            </DemoShell>
           )}
 
-          {/* INVESTIGATION FLOW */}
-          {demoTab === 'flow' && (
-            <div className="panel overflow-hidden">
-              <div className="flex items-center justify-between border-b border-zord-border bg-zord-muted/30 px-4 py-2">
-                <div className="flex items-center gap-3">
-                  <div className="flex gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/60" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/60" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/60" />
-                  </div>
-                  <span className="text-[10px] font-mono text-zord-text-muted">ZORD — FLUXO DO CICLO DE INTELIGÊNCIA</span>
+          {/* ── MOTOR DE HIPÓTESES ── */}
+          {demoTab === 'hypothesis' && (
+            <DemoShell title="HYPOTHESIS ENGINE — ANÁLISE COMPARATIVA" badge="IA ATIVA" badgeColor="text-purple-400" pulse={pulse}>
+              <div className="grid grid-cols-1 gap-0 sm:grid-cols-3">
+                {/* Hypothesis list */}
+                <div className="col-span-2 space-y-4 border-r border-zord-border p-5">
+                  {[
+                    { id: 'H1', title: 'Lavagem Internacional de $4.2M', score: 94, ev: 12, ce: 2, level: 'CRÍTICO', color: 'text-red-400', bar: 'bg-red-500', border: 'border-red-700/50 bg-red-950/10' },
+                    { id: 'H2', title: 'Rede de Influência — Setor Financeiro', score: 78, ev: 8, ce: 1, level: 'ALTO', color: 'text-orange-400', bar: 'bg-orange-500', border: 'border-orange-700/50 bg-orange-950/10' },
+                    { id: 'H3', title: 'Contrabando Via Porto de Dubai', score: 61, ev: 5, ce: 3, level: 'MÉDIO', color: 'text-yellow-400', bar: 'bg-yellow-500', border: 'border-yellow-700/50 bg-yellow-950/10' },
+                    { id: 'H4', title: 'Fraude em Contratos Governamentais', score: 45, ev: 4, ce: 4, level: 'BAIXO', color: 'text-zord-text-muted', bar: 'bg-zord-border', border: 'border-zord-border bg-zord-surface/20' },
+                  ].map((h) => (
+                    <div key={h.id} className={`rounded border p-4 ${h.border}`}>
+                      <div className="mb-3 flex items-start justify-between gap-2">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className={`font-mono text-xs font-black ${h.color}`}>{h.id}</span>
+                            <span className={`rounded border px-1.5 py-0.5 text-[8px] font-bold ${h.color} border-current/40 bg-current/5`}>{h.level}</span>
+                          </div>
+                          <div className="mt-0.5 text-xs font-semibold text-zord-text">{h.title}</div>
+                        </div>
+                        <div className={`shrink-0 font-mono text-2xl font-black ${h.color}`}>{h.score}%</div>
+                      </div>
+                      {/* Score bar */}
+                      <div className="mb-3 h-1.5 w-full rounded-full bg-zord-border/40">
+                        <div className={`h-full rounded-full ${h.bar}`} style={{ width: `${h.score}%`, opacity: 0.7 }} />
+                      </div>
+                      {/* Evidence counters */}
+                      <div className="flex gap-4 text-[9px]">
+                        <span className="text-green-400">✓ {h.ev} evidências corroboram</span>
+                        <span className="text-red-400">✗ {h.ce} contradizem</span>
+                        <span className="text-zord-text-muted">· {h.ev + h.ce} total</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-
-              <div className="p-6 overflow-x-auto">
-                <div className="mx-auto min-w-[600px] max-w-3xl">
-                  {/* Flow chart */}
-                  <div className="flex flex-col items-center gap-0">
-
-                    {/* Start */}
-                    <div className="rounded-full border border-zord-accent bg-zord-accent/10 px-6 py-2">
-                      <span className="text-xs font-bold text-zord-accent">INÍCIO DA INVESTIGAÇÃO</span>
+                {/* AI Analysis panel */}
+                <div className="p-5">
+                  <div className="mb-4 flex items-center gap-2">
+                    <span className={`h-2 w-2 rounded-full bg-purple-400 ${pulse ? 'opacity-100' : 'opacity-40'} transition-opacity`} />
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-purple-400">Análise da IA</span>
+                  </div>
+                  <div className="rounded border border-purple-700/40 bg-purple-950/10 p-3 text-[10px] leading-relaxed text-zord-text-muted mb-4">
+                    <span className="font-semibold text-purple-400">H1 é a hipótese dominante.</span> As transferências de USD 350k (30 ABR) e USD 85k (15 ABR) correlacionam com comunicações criptografadas detectadas 24-48h antes, via nó Dubai. Padrão consistente com tipologia FATF de layering.
+                  </div>
+                  <div className="mb-3 text-[9px] font-bold uppercase tracking-widest text-zord-text-muted">Gaps Detectados</div>
+                  {[
+                    { t: 'Período sem eventos: 22-28 MAI', s: 'ALTO' },
+                    { t: 'Entidade "BROKER-X" sem verificação', s: 'MÉDIO' },
+                    { t: 'H3 carece de evidência física', s: 'BAIXO' },
+                  ].map((g) => (
+                    <div key={g.t} className="mb-2 flex items-start gap-2 rounded border border-zord-border/50 bg-zord-surface/20 p-2">
+                      <span className={`mt-0.5 text-[8px] font-bold ${g.s === 'ALTO' ? 'text-red-400' : g.s === 'MÉDIO' ? 'text-yellow-400' : 'text-zord-text-muted'}`}>{g.s}</span>
+                      <span className="text-[9px] text-zord-text-muted">{g.t}</span>
                     </div>
-                    <FlowArrow />
-
-                    {/* Phase 1 — Parallel inputs */}
-                    <div className="w-full">
-                      <div className="mb-2 text-center text-[9px] font-medium uppercase tracking-widest text-zord-text-muted">Fase 1 — Coleta</div>
-                      <div className="grid grid-cols-3 gap-3">
-                        {[
-                          { label: 'Entidades Cadastradas', icon: '◈', color: 'border-purple-700/50 text-purple-400 bg-purple-950/20' },
-                          { label: 'Evidências no Vault', icon: '⊟', color: 'border-yellow-700/50 text-yellow-400 bg-yellow-950/20' },
-                          { label: 'Trust Engine Avalia', icon: '⬟', color: 'border-teal-700/50 text-teal-400 bg-teal-950/20' },
-                        ].map((n) => (
-                          <div key={n.label} className={`rounded border p-3 text-center ${n.color}`}>
-                            <div className="mb-1 text-lg">{n.icon}</div>
-                            <div className="text-[9px] font-medium">{n.label}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <FlowArrow />
-
-                    {/* Phase 2 — Analysis */}
-                    <div className="w-full">
-                      <div className="mb-2 text-center text-[9px] font-medium uppercase tracking-widest text-zord-text-muted">Fase 2 — Análise & Correlação</div>
-                      <div className="grid grid-cols-3 gap-3">
-                        {[
-                          { label: 'Knowledge Graph mapeia redes', icon: '◉', color: 'border-cyan-700/50 text-cyan-400 bg-cyan-950/20' },
-                          { label: 'Timeline ordena eventos', icon: '⊞', color: 'border-green-700/50 text-green-400 bg-green-950/20' },
-                          { label: 'IA detecta padrões', icon: '⬢', color: 'border-pink-700/50 text-pink-400 bg-pink-950/20' },
-                        ].map((n) => (
-                          <div key={n.label} className={`rounded border p-3 text-center ${n.color}`}>
-                            <div className="mb-1 text-lg">{n.icon}</div>
-                            <div className="text-[9px] font-medium">{n.label}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <FlowArrow />
-
-                    {/* Phase 3 — Decision */}
-                    <div className="w-full">
-                      <div className="mb-2 text-center text-[9px] font-medium uppercase tracking-widest text-zord-text-muted">Fase 3 — Hipóteses</div>
-                      <div className="rounded border border-orange-700/50 bg-orange-950/20 p-4 text-center">
-                        <div className="mb-2 flex items-center justify-center gap-2">
-                          <span className="text-xl text-orange-400">⊕</span>
-                          <span className="text-sm font-semibold text-orange-400">Hypothesis Engine</span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                          {[
-                            { h: 'H1: Lavagem de $4.2M', score: 94, color: 'text-red-400' },
-                            { h: 'H2: Rede de Influência', score: 78, color: 'text-yellow-400' },
-                            { h: 'H3: Contrabando Via Dubai', score: 61, color: 'text-orange-400' },
-                            { h: 'H4: Fraude Financeira', score: 45, color: 'text-zord-text-muted' },
-                          ].map((hyp) => (
-                            <div key={hyp.h} className="flex items-center justify-between rounded border border-zord-border bg-zord-bg/50 px-2 py-1.5">
-                              <span className="text-[9px] text-zord-text-muted">{hyp.h}</span>
-                              <span className={`text-[10px] font-bold ${hyp.color}`}>{hyp.score}%</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    <FlowArrow />
-
-                    {/* Phase 4 — Output */}
-                    <div className="w-full">
-                      <div className="mb-2 text-center text-[9px] font-medium uppercase tracking-widest text-zord-text-muted">Fase 4 — Produto de Inteligência</div>
-                      <div className="grid grid-cols-2 gap-3">
-                        {[
-                          { label: 'Relatório Tático', sub: 'Para operações imediatas', icon: '⊜', color: 'border-blue-700/50 text-blue-400 bg-blue-950/20' },
-                          { label: 'Briefing Executivo', sub: 'Para tomada de decisão', icon: '⊜', color: 'border-indigo-700/50 text-indigo-400 bg-indigo-950/20' },
-                        ].map((n) => (
-                          <div key={n.label} className={`rounded border p-3 ${n.color}`}>
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-base">{n.icon}</span>
-                              <span className="text-xs font-semibold">{n.label}</span>
-                            </div>
-                            <div className="text-[9px] opacity-60">{n.sub}</div>
-                            <div className="mt-2 flex gap-1">
-                              <span className="rounded border border-current px-1 py-0.5 text-[7px] opacity-60">PDF</span>
-                              <span className="rounded border border-current px-1 py-0.5 text-[7px] opacity-60">DOCX</span>
-                              <span className="rounded border border-current px-1 py-0.5 text-[7px] opacity-60">CLASSIFICADO</span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <FlowArrow />
-
-                    {/* End */}
-                    <div className="rounded-full border border-green-600 bg-green-950/30 px-6 py-2">
-                      <span className="text-xs font-bold text-green-400">AÇÃO OPERACIONAL / ENCERRAMENTO</span>
-                    </div>
+                  ))}
+                  <div className="mt-4 rounded border border-zord-accent/30 bg-zord-accent/5 p-3">
+                    <div className="text-[9px] font-bold text-zord-accent mb-1">Recomendação Prioritária</div>
+                    <p className="text-[9px] leading-snug text-zord-text-muted">Focar coleta em período 22-28 MAI para confirmar ou refutar H1. Solicitar MLAT para registros bancários Dubai.</p>
                   </div>
                 </div>
               </div>
-            </div>
+            </DemoShell>
+          )}
+
+          {/* ── CENTRO DE OPERAÇÕES ── */}
+          {demoTab === 'ops' && (
+            <DemoShell title="CENTRO DE OPERAÇÕES — VISÃO MULTI-INVESTIGAÇÃO" badge="3 ATIVAS" badgeColor="text-red-400" pulse={pulse}>
+              {/* Top bar */}
+              <div className="grid grid-cols-4 border-b border-zord-border">
+                {[
+                  { v: '3', l: 'Operações Ativas', c: 'text-zord-accent' },
+                  { v: '11', l: 'Analistas Online', c: 'text-green-400' },
+                  { v: '8', l: 'Alertas Críticos', c: 'text-red-400' },
+                  { v: '94%', l: 'H1 Trust Score', c: 'text-purple-400' },
+                ].map((s) => (
+                  <div key={s.l} className="border-r border-zord-border p-3 last:border-r-0 text-center">
+                    <div className={`font-mono text-xl font-black ${s.c}`}>{s.v}</div>
+                    <div className="text-[9px] text-zord-text-muted">{s.l}</div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-1 gap-0 sm:grid-cols-3">
+                {/* Operations */}
+                <div className="col-span-2 border-r border-zord-border p-4">
+                  <div className="mb-3 text-[9px] font-bold uppercase tracking-widest text-zord-text-muted">Investigações em Curso</div>
+                  <div className="space-y-3">
+                    {[
+                      {
+                        id: 'OP-2024-001', name: 'OPERAÇÃO NIGHTHAWK', cls: 'SECRETO', status: 'CRÍTICA',
+                        analistas: 5, score: 94, bar: 'bg-red-500',
+                        color: 'border-red-700/50 bg-red-950/10',
+                        badge: 'text-red-400 border-red-700/50 bg-red-950/20',
+                        tags: ['LAVAGEM', 'TRANSNACIONAL', 'FINANCEIRO'],
+                        last: 'Última ação: 14 min atrás',
+                      },
+                      {
+                        id: 'OP-2024-007', name: 'PROJETO ALFA', cls: 'CONFIDENCIAL', status: 'ALTA',
+                        analistas: 3, score: 71, bar: 'bg-orange-500',
+                        color: 'border-orange-700/50 bg-orange-950/10',
+                        badge: 'text-orange-400 border-orange-700/50 bg-orange-950/20',
+                        tags: ['CORRUPÇÃO', 'SETOR PÚBLICO'],
+                        last: 'Última ação: 1h 20min atrás',
+                      },
+                      {
+                        id: 'OP-2024-011', name: 'OPERAÇÃO TEMPESTADE', cls: 'CONFIDENCIAL', status: 'MÉDIA',
+                        analistas: 2, score: 43, bar: 'bg-yellow-500',
+                        color: 'border-yellow-700/50 bg-yellow-950/10',
+                        badge: 'text-yellow-400 border-yellow-700/50 bg-yellow-950/20',
+                        tags: ['TRÁFICO', 'REGIONAL'],
+                        last: 'Última ação: 3h atrás — Gap detectado',
+                      },
+                    ].map((op) => (
+                      <div key={op.id} className={`rounded border p-3 ${op.color}`}>
+                        <div className="mb-2 flex items-start justify-between gap-2">
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-mono text-[9px] text-zord-text-muted">{op.id}</span>
+                              <span className={`rounded border px-1.5 py-0.5 text-[8px] font-bold ${op.badge}`}>{op.status}</span>
+                              <span className="rounded border border-zord-border px-1.5 py-0.5 text-[8px] text-zord-text-muted">{op.cls}</span>
+                            </div>
+                            <div className="mt-0.5 text-xs font-bold text-zord-text">{op.name}</div>
+                          </div>
+                          <div className="shrink-0 text-right">
+                            <div className="font-mono text-lg font-black text-zord-text">{op.score}%</div>
+                            <div className="text-[8px] text-zord-text-muted">trust score</div>
+                          </div>
+                        </div>
+                        <div className="mb-2 h-1 w-full rounded-full bg-zord-border/40">
+                          <div className={`h-full rounded-full ${op.bar}`} style={{ width: `${op.score}%`, opacity: 0.7 }} />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-wrap gap-1">
+                            {op.tags.map((t) => (
+                              <span key={t} className="rounded bg-zord-border/30 px-1.5 py-0.5 text-[8px] text-zord-text-muted">{t}</span>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-1 text-[8px] text-zord-text-muted">
+                            <span>👤</span><span>{op.analistas} analistas</span>
+                          </div>
+                        </div>
+                        <div className="mt-1 text-[8px] text-zord-text-muted/60">{op.last}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Live feed */}
+                <div className="p-4">
+                  <div className="mb-3 flex items-center gap-2">
+                    <span className={`h-2 w-2 rounded-full bg-red-400 ${pulse ? 'opacity-100' : 'opacity-40'} transition-opacity`} />
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-red-400">Feed ao Vivo</span>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      { t: '14:38', op: 'NIGHTHAWK', msg: 'Movimentação USD 350k confirmada — conta Suíça', sev: 'CRÍTICO', sc: 'text-red-400 border-red-700/50 bg-red-950/20' },
+                      { t: '14:35', op: 'NIGHTHAWK', msg: 'Entidade VORONOV detectada em Dubai e Istambul simultaneamente', sev: 'CRÍTICO', sc: 'text-red-400 border-red-700/50 bg-red-950/20' },
+                      { t: '14:22', op: 'ALFA', msg: 'Contrato #2024-089 modificado pós-assinatura — hash alterado', sev: 'ALTO', sc: 'text-orange-400 border-orange-700/50 bg-orange-950/20' },
+                      { t: '13:58', op: 'NIGHTHAWK', msg: 'Nova conexão: BLACK SEA TRADING → MIRKA CAPITAL (+$85k)', sev: 'ALTO', sc: 'text-orange-400 border-orange-700/50 bg-orange-950/20' },
+                      { t: '13:44', op: 'TEMPESTADE', msg: 'Gap temporal identificado: 22-28 MAI sem registros', sev: 'MÉDIO', sc: 'text-yellow-400 border-yellow-700/50 bg-yellow-950/20' },
+                      { t: '13:30', op: 'ALFA', msg: 'Relatório parcial gerado — aguardando aprovação', sev: 'INFO', sc: 'text-zord-text-muted border-zord-border bg-zord-surface/20' },
+                    ].map((ev, i) => (
+                      <div key={i} className={`rounded border p-2 ${ev.sc}`}>
+                        <div className="flex items-center justify-between mb-0.5">
+                          <span className="font-mono text-[8px] font-bold">{ev.sev}</span>
+                          <span className="font-mono text-[8px] opacity-60">{ev.t} · {ev.op}</span>
+                        </div>
+                        <p className="text-[9px] leading-snug">{ev.msg}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </DemoShell>
           )}
         </div>
       </section>
@@ -1015,6 +1208,41 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+    </div>
+  )
+}
+
+function DemoShell({
+  title,
+  badge,
+  badgeColor,
+  pulse,
+  children,
+}: {
+  title: string
+  badge: string
+  badgeColor: string
+  pulse: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <div className="overflow-hidden rounded-lg border border-zord-border shadow-2xl shadow-black/40">
+      {/* Title bar */}
+      <div className="flex items-center justify-between border-b border-zord-border bg-zord-surface/80 px-4 py-2.5">
+        <div className="flex items-center gap-3">
+          <div className="flex gap-1.5">
+            <div className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
+            <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/70" />
+            <div className="h-2.5 w-2.5 rounded-full bg-green-500/70" />
+          </div>
+          <span className="font-mono text-[10px] text-zord-text-muted tracking-wide">{title}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`h-1.5 w-1.5 rounded-full ${pulse ? 'opacity-100' : 'opacity-30'} transition-opacity ${badgeColor.replace('text-', 'bg-')}`} />
+          <span className={`font-mono text-[9px] font-bold ${badgeColor}`}>{badge}</span>
+        </div>
+      </div>
+      {children}
     </div>
   )
 }
