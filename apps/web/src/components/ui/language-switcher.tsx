@@ -15,12 +15,11 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const pathname = usePathname()
   const currentLocale = (params?.locale as string) ?? 'he'
 
-  const getHref = (code: string) => {
+  const getHref = () => {
     const segments = pathname.split('/')
-    if (segments[1] && ['he', 'en', 'ru', 'pt'].includes(segments[1])) {
-      segments[1] = code
-    }
-    return segments.join('/') || '/'
+    // Strip the locale prefix (segments[1]) — next-intl Link adds it via `locale` prop
+    const rest = segments.slice(2).join('/')
+    return rest ? `/${rest}` : '/'
   }
 
   return (
@@ -28,7 +27,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
       {LOCALES.map(({ code, flag, label }) => (
         <Link
           key={code}
-          href={getHref(code)}
+          href={getHref()}
           locale={code as 'he' | 'en' | 'ru' | 'pt'}
           title={label}
           className={`flex h-7 w-7 items-center justify-center rounded text-base transition-all ${
