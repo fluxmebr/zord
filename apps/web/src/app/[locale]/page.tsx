@@ -247,7 +247,7 @@ export default function LandingPage() {
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(0,212,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,212,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px]" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-zord-bg" />
 
-        <div className="relative mx-auto max-w-7xl px-4 py-20 text-center sm:py-32">
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 py-20 text-center sm:py-32">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-zord-accent/30 bg-zord-accent/5 px-3 py-1">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-zord-accent" />
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Plataforma Definitiva para Inteligência Investigativa</span>
@@ -261,7 +261,7 @@ export default function LandingPage() {
           </h1>
 
           <p className="mx-auto mb-4 max-w-2xl text-lg font-semibold leading-snug text-zord-text sm:text-xl">
-            Transforme Dados Brutos em Inteligência Acionável.<br className="hidden sm:block" /> Otimize Suas Investigações.
+            Transforme Dados Brutos em Inteligência Acionável. Otimize Suas Investigações.
           </p>
 
           <p className="mx-auto mb-10 max-w-2xl text-sm leading-relaxed text-zord-text-muted">
@@ -300,12 +300,12 @@ export default function LandingPage() {
 
       {/* DEMO VISUAL */}
       <section className="border-b border-zord-border bg-gradient-to-b from-zord-bg via-zord-muted/5 to-zord-bg py-20">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-10 text-center">
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Demonstração Interativa</span>
             <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Explore o Sistema em Profundidade</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-zord-text-muted">
-              Seis cenários reais — do painel básico ao centro de operações multi-investigação. Cada visualização reflete a interface real do ZORD.
+              Seis cenários reais · do painel básico ao centro de operações multi-investigação. Cada visualização reflete a interface real do ZORD.
             </p>
           </div>
 
@@ -344,7 +344,7 @@ export default function LandingPage() {
 
           {/* ── PAINEL PRINCIPAL ── */}
           {demoTab === 'dashboard' && (
-            <DemoShell title="ZORD INTELLIGENCE — PAINEL DE CONTROLE" badge="AO VIVO" badgeColor="text-green-400" pulse={pulse}>
+            <DemoShell title="ZORD INTELLIGENCE · PAINEL DE CONTROLE" badge="AO VIVO" badgeColor="text-green-400" pulse={pulse}>
               {/* Stats row */}
               <div className="grid grid-cols-2 gap-3 border-b border-zord-border p-4 sm:grid-cols-4">
                 {[
@@ -369,10 +369,10 @@ export default function LandingPage() {
                   {[
                     { time: '14:38', user: 'LEVY, A.', action: 'Adicionou evidência DOC-2024-089 → Operação Nighthawk', color: 'text-yellow-400', icon: '⊟' },
                     { time: '14:35', user: 'COHEN, R.', action: 'Entidade "MIRKA CAPITAL" vinculada a 3 investigações ativas', color: 'text-purple-400', icon: '◈' },
-                    { time: '14:31', user: 'IA ENGINE', action: 'Hipótese H1 atualizada para 94% — novos padrões financeiros detectados', color: 'text-zord-accent', icon: '⬢' },
-                    { time: '14:22', user: 'RONEN, S.', action: 'Relatório tático exportado — CLASSIFICADO — Operação Alfa', color: 'text-green-400', icon: '⊜' },
+                    { time: '14:31', user: 'IA ENGINE', action: 'Hipótese H1 atualizada para 94% · novos padrões financeiros detectados', color: 'text-zord-accent', icon: '⬢' },
+                    { time: '14:22', user: 'RONEN, S.', action: 'Relatório tático exportado · CLASSIFICADO · Operação Alfa', color: 'text-green-400', icon: '⊜' },
                     { time: '14:15', user: 'SISTEMA', action: 'Gap temporal detectado: 47 dias sem eventos na Operação Tempestade', color: 'text-orange-400', icon: '◉' },
-                    { time: '13:58', user: 'LEVY, A.', action: 'Nova entidade cadastrada: KARIM VORONOV — risco EXTREMO (89/100)', color: 'text-red-400', icon: '⊗' },
+                    { time: '13:58', user: 'LEVY, A.', action: 'Nova entidade cadastrada: KARIM VORONOV · risco EXTREMO (89/100)', color: 'text-red-400', icon: '⊗' },
                   ].map((ev, i) => (
                     <div key={i} className="flex gap-3 border-b border-zord-border/30 py-2 last:border-0">
                       <span className={`mt-0.5 shrink-0 text-sm ${ev.color}`}>{ev.icon}</span>
@@ -412,7 +412,7 @@ export default function LandingPage() {
 
           {/* ── COFRE DE EVIDÊNCIAS ── */}
           {demoTab === 'vault' && (
-            <DemoShell title="COFRE DE EVIDÊNCIAS — OPERAÇÃO NIGHTHAWK" badge="CIFRADO AES-256" badgeColor="text-green-400" pulse={pulse}>
+            <DemoShell title="COFRE DE EVIDÊNCIAS · OPERAÇÃO NIGHTHAWK" badge="CIFRADO AES-256" badgeColor="text-green-400" pulse={pulse}>
               <div className="grid grid-cols-1 sm:grid-cols-5">
                 {/* File list */}
                 <div className="col-span-3 overflow-x-auto border-r border-zord-border">
@@ -456,7 +456,7 @@ export default function LandingPage() {
                 </div>
                 {/* File detail */}
                 <div className="col-span-2 p-4">
-                  <div className="mb-3 text-[9px] font-bold uppercase tracking-widest text-zord-text-muted">Detalhes — EVD-001</div>
+                  <div className="mb-3 text-[9px] font-bold uppercase tracking-widest text-zord-text-muted">Detalhes · EVD-001</div>
                   <div className="space-y-2">
                     {[
                       { k: 'Arquivo', v: 'contrato_black_sea_2024.pdf' },
@@ -497,7 +497,7 @@ export default function LandingPage() {
 
           {/* ── GRAFO DE ENTIDADES ── */}
           {demoTab === 'graph' && (
-            <DemoShell title="OPERAÇÃO NIGHTHAWK — ENTITY RELATIONSHIP GRAPH" badge="CRÍTICO" badgeColor="text-red-400" pulse={pulse}>
+            <DemoShell title="OPERAÇÃO NIGHTHAWK · ENTITY RELATIONSHIP GRAPH" badge="CRÍTICO" badgeColor="text-red-400" pulse={pulse}>
 
               {/* Graph canvas */}
               <div className="relative h-80 overflow-hidden bg-[radial-gradient(ellipse_at_center,rgba(0,212,255,0.03)_0%,transparent_70%)] sm:h-96">
@@ -528,7 +528,7 @@ export default function LandingPage() {
                   <text x="285" y="260" fill="rgba(251,191,36,0.6)" fontSize="8" textAnchor="middle" fontFamily="monospace">CONTROLA</text>
                   <text x="400" y="278" fill="rgba(239,68,68,0.7)" fontSize="8" textAnchor="middle" fontFamily="monospace" fontWeight="bold">SUSPEITO PRIMÁRIO</text>
 
-                  {/* Center node — Investigation */}
+                  {/* Center node · Investigation */}
                   <circle cx="400" cy="200" r="28" fill="rgba(0,212,255,0.1)" stroke="rgba(0,212,255,0.6)" strokeWidth="2"/>
                   <circle cx="400" cy="200" r="22" fill="rgba(0,10,20,0.9)"/>
                   <text x="400" y="197" fill="#00d4ff" fontSize="9" textAnchor="middle" fontFamily="monospace" fontWeight="bold">OPERAÇÃO</text>
@@ -594,7 +594,7 @@ export default function LandingPage() {
 
           {/* TIMELINE */}
           {demoTab === 'timeline' && (
-            <DemoShell title="OPERAÇÃO NIGHTHAWK — TIMELINE ENGINE" badge="ABR→MAI 2024" badgeColor="text-green-400" pulse={pulse}>
+            <DemoShell title="OPERAÇÃO NIGHTHAWK · TIMELINE ENGINE" badge="ABR→MAI 2024" badgeColor="text-green-400" pulse={pulse}>
 
               <div className="p-4">
                 {/* Timeline axis */}
@@ -690,13 +690,13 @@ export default function LandingPage() {
 
           {/* ── MOTOR DE HIPÓTESES ── */}
           {demoTab === 'hypothesis' && (
-            <DemoShell title="HYPOTHESIS ENGINE — ANÁLISE COMPARATIVA" badge="IA ATIVA" badgeColor="text-purple-400" pulse={pulse}>
+            <DemoShell title="HYPOTHESIS ENGINE · ANÁLISE COMPARATIVA" badge="IA ATIVA" badgeColor="text-purple-400" pulse={pulse}>
               <div className="grid grid-cols-1 gap-0 sm:grid-cols-3">
                 {/* Hypothesis list */}
                 <div className="col-span-2 space-y-4 border-r border-zord-border p-5">
                   {[
                     { id: 'H1', title: 'Lavagem Internacional de $4.2M', score: 94, ev: 12, ce: 2, level: 'CRÍTICO', color: 'text-red-400', bar: 'bg-red-500', border: 'border-red-700/50 bg-red-950/10' },
-                    { id: 'H2', title: 'Rede de Influência — Setor Financeiro', score: 78, ev: 8, ce: 1, level: 'ALTO', color: 'text-orange-400', bar: 'bg-orange-500', border: 'border-orange-700/50 bg-orange-950/10' },
+                    { id: 'H2', title: 'Rede de Influência · Setor Financeiro', score: 78, ev: 8, ce: 1, level: 'ALTO', color: 'text-orange-400', bar: 'bg-orange-500', border: 'border-orange-700/50 bg-orange-950/10' },
                     { id: 'H3', title: 'Contrabando Via Porto de Dubai', score: 61, ev: 5, ce: 3, level: 'MÉDIO', color: 'text-yellow-400', bar: 'bg-yellow-500', border: 'border-yellow-700/50 bg-yellow-950/10' },
                     { id: 'H4', title: 'Fraude em Contratos Governamentais', score: 45, ev: 4, ce: 4, level: 'BAIXO', color: 'text-zord-text-muted', bar: 'bg-zord-border', border: 'border-zord-border bg-zord-surface/20' },
                   ].map((h) => (
@@ -755,7 +755,7 @@ export default function LandingPage() {
 
           {/* ── CENTRO DE OPERAÇÕES ── */}
           {demoTab === 'ops' && (
-            <DemoShell title="CENTRO DE OPERAÇÕES — VISÃO MULTI-INVESTIGAÇÃO" badge="3 ATIVAS" badgeColor="text-red-400" pulse={pulse}>
+            <DemoShell title="CENTRO DE OPERAÇÕES · VISÃO MULTI-INVESTIGAÇÃO" badge="3 ATIVAS" badgeColor="text-red-400" pulse={pulse}>
               {/* Top bar */}
               <div className="grid grid-cols-4 border-b border-zord-border">
                 {[
@@ -799,7 +799,7 @@ export default function LandingPage() {
                         color: 'border-yellow-700/50 bg-yellow-950/10',
                         badge: 'text-yellow-400 border-yellow-700/50 bg-yellow-950/20',
                         tags: ['TRÁFICO', 'REGIONAL'],
-                        last: 'Última ação: 3h atrás — Gap detectado',
+                        last: 'Última ação: 3h atrás · Gap detectado',
                       },
                     ].map((op) => (
                       <div key={op.id} className={`rounded border p-3 ${op.color}`}>
@@ -844,12 +844,12 @@ export default function LandingPage() {
                   </div>
                   <div className="space-y-2">
                     {[
-                      { t: '14:38', op: 'NIGHTHAWK', msg: 'Movimentação USD 350k confirmada — conta Suíça', sev: 'CRÍTICO', sc: 'text-red-400 border-red-700/50 bg-red-950/20' },
+                      { t: '14:38', op: 'NIGHTHAWK', msg: 'Movimentação USD 350k confirmada · conta Suíça', sev: 'CRÍTICO', sc: 'text-red-400 border-red-700/50 bg-red-950/20' },
                       { t: '14:35', op: 'NIGHTHAWK', msg: 'Entidade VORONOV detectada em Dubai e Istambul simultaneamente', sev: 'CRÍTICO', sc: 'text-red-400 border-red-700/50 bg-red-950/20' },
-                      { t: '14:22', op: 'ALFA', msg: 'Contrato #2024-089 modificado pós-assinatura — hash alterado', sev: 'ALTO', sc: 'text-orange-400 border-orange-700/50 bg-orange-950/20' },
+                      { t: '14:22', op: 'ALFA', msg: 'Contrato #2024-089 modificado pós-assinatura · hash alterado', sev: 'ALTO', sc: 'text-orange-400 border-orange-700/50 bg-orange-950/20' },
                       { t: '13:58', op: 'NIGHTHAWK', msg: 'Nova conexão: BLACK SEA TRADING → MIRKA CAPITAL (+$85k)', sev: 'ALTO', sc: 'text-orange-400 border-orange-700/50 bg-orange-950/20' },
                       { t: '13:44', op: 'TEMPESTADE', msg: 'Gap temporal identificado: 22-28 MAI sem registros', sev: 'MÉDIO', sc: 'text-yellow-400 border-yellow-700/50 bg-yellow-950/20' },
-                      { t: '13:30', op: 'ALFA', msg: 'Relatório parcial gerado — aguardando aprovação', sev: 'INFO', sc: 'text-zord-text-muted border-zord-border bg-zord-surface/20' },
+                      { t: '13:30', op: 'ALFA', msg: 'Relatório parcial gerado · aguardando aprovação', sev: 'INFO', sc: 'text-zord-text-muted border-zord-border bg-zord-surface/20' },
                     ].map((ev, i) => (
                       <div key={i} className={`rounded border p-2 ${ev.sc}`}>
                         <div className="flex items-center justify-between mb-0.5">
@@ -869,7 +869,7 @@ export default function LandingPage() {
 
       {/* CHALLENGES */}
       <section className="border-b border-zord-border py-20">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-12 text-center">
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">O Problema</span>
             <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Desafios da Investigação Moderna</h2>
@@ -879,7 +879,7 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {CHALLENGES.map((c) => (
-              <div key={c.title} className="panel p-5">
+              <div key={c.title} className="panel cursor-default p-5 transition-all hover:border-zord-accent/40 hover:shadow-lg hover:shadow-zord-accent/5">
                 <div className="mb-3 text-2xl text-zord-accent">{c.icon}</div>
                 <div className="mb-2 text-xs font-semibold text-zord-text">{c.title}</div>
                 <p className="text-[11px] leading-relaxed text-zord-text-muted">{c.desc}</p>
@@ -891,7 +891,7 @@ export default function LandingPage() {
 
       {/* MODULES */}
       <section className="border-b border-zord-border py-20">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-12 text-center">
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Sua Vantagem Estratégica</span>
             <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">11 Módulos Integrados em Cada Etapa</h2>
@@ -921,7 +921,7 @@ export default function LandingPage() {
             <ModuleCard module={MODULES[activeModule]!} />
           </div>
 
-          <div className="hidden grid-cols-3 gap-4 xl:grid-cols-4 lg:grid">
+          <div className="hidden gap-4 lg:grid lg:grid-cols-3 xl:grid-cols-4">
             {MODULES.map((m) => (
               <ModuleCard key={m.id} module={m} />
             ))}
@@ -931,7 +931,7 @@ export default function LandingPage() {
 
       {/* HOW IT WORKS */}
       <section className="border-b border-zord-border py-20">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-12 text-center">
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Fluxo Operacional</span>
             <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Da Coleta ao Insight</h2>
@@ -982,7 +982,7 @@ export default function LandingPage() {
                       {step.icon}
                     </div>
                   </div>
-                  <div className={`panel flex-1 p-5 lg:max-w-lg ${i % 2 !== 0 ? 'lg:ml-auto' : ''}`}>
+                  <div className={`panel flex-1 cursor-default p-5 transition-all hover:border-zord-accent/30 hover:shadow-lg hover:shadow-zord-accent/5 lg:max-w-lg ${i % 2 !== 0 ? 'lg:ml-auto' : ''}`}>
                     <div className="mb-1 text-[10px] font-medium uppercase tracking-widest text-zord-accent">Etapa {step.step}</div>
                     <h3 className="mb-2 text-sm font-semibold text-zord-text">{step.title}</h3>
                     <p className="text-xs leading-relaxed text-zord-text-muted">{step.desc}</p>
@@ -996,13 +996,13 @@ export default function LandingPage() {
 
       {/* MULTI-TENANT */}
       <section className="border-b border-zord-border py-20">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
               <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Arquitetura Multi-Tenant</span>
               <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Segurança e Isolamento Inigualáveis</h2>
               <p className="mt-4 text-sm leading-relaxed text-zord-text-muted">
-                O ZORD foi arquitetado para operar múltiplas instituições completamente isoladas em uma única infraestrutura. Cada organização tem seus dados, usuários e configurações separados — <strong className="text-zord-text">nenhum dado vaza entre tenants</strong>. Isso garante a máxima segurança e confidencialidade para suas operações.
+                O ZORD foi arquitetado para operar múltiplas instituições completamente isoladas em uma única infraestrutura. Cada organização tem seus dados, usuários e configurações separados: <strong className="text-zord-text">nenhum dado vaza entre tenants</strong>. Isso garante a máxima segurança e confidencialidade para suas operações.
               </p>
               <ul className="mt-6 space-y-3">
                 {[
@@ -1031,7 +1031,7 @@ export default function LandingPage() {
                     { role: 'OPERATOR', desc: 'Execução operacional', color: 'border-green-700/50 bg-green-950/30 text-green-400' },
                     { role: 'VIEWER', desc: 'Leitura somente', color: 'border-zord-border bg-zord-muted/30 text-zord-text-muted' },
                   ].map((r) => (
-                    <div key={r.role} className={`flex items-center justify-between rounded border px-3 py-2 ${r.color}`}>
+                    <div key={r.role} className={`flex cursor-default items-center justify-between rounded border px-3 py-2 transition-all hover:scale-[1.01] hover:shadow-sm ${r.color}`}>
                       <span className="text-[10px] font-bold uppercase tracking-wider">{r.role}</span>
                       <span className="text-[10px]">{r.desc}</span>
                     </div>
@@ -1043,7 +1043,7 @@ export default function LandingPage() {
                 <div className="mb-3 text-[10px] font-medium uppercase tracking-widest text-zord-text-muted">Isolamento de Dados</div>
                 <div className="grid grid-cols-3 gap-2">
                   {['Agência Federal', 'Polícia Civil', 'Ministério Público'].map((inst) => (
-                    <div key={inst} className="rounded border border-zord-border bg-zord-muted/20 p-2 text-center">
+                    <div key={inst} className="cursor-default rounded border border-zord-border bg-zord-muted/20 p-2 text-center transition-all hover:border-zord-accent/30 hover:bg-zord-muted/40">
                       <div className="mb-1 text-lg">🏛</div>
                       <div className="text-[9px] font-medium text-zord-text">{inst}</div>
                       <div className="mt-1 text-[8px] text-zord-text-muted">Isolado</div>
@@ -1059,7 +1059,7 @@ export default function LandingPage() {
 
       {/* SECURITY */}
       <section className="border-b border-zord-border py-20">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-12 text-center">
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Segurança</span>
             <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Construído para Ambientes Hostis</h2>
@@ -1070,7 +1070,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {SECURITY_FEATURES.map((f) => (
-              <div key={f.label} className="panel p-4 text-center">
+              <div key={f.label} className="panel cursor-default p-4 text-center transition-all hover:border-zord-accent/40 hover:shadow-lg hover:shadow-zord-accent/5">
                 <div className="mb-2 text-2xl text-zord-accent">{f.icon}</div>
                 <div className="text-xs font-semibold text-zord-text">{f.label}</div>
                 <div className="mt-1 text-[10px] text-zord-text-muted">{f.desc}</div>
@@ -1082,7 +1082,7 @@ export default function LandingPage() {
 
       {/* TECH STACK */}
       <section className="border-b border-zord-border py-20">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-10 text-center">
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Stack Tecnológico</span>
             <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Tecnologias de Produção</h2>
@@ -1102,7 +1102,7 @@ export default function LandingPage() {
               { name: 'GPT-4 & Claude', role: 'Camada de IA', color: 'text-purple-400' },
               { name: 'PM2', role: 'Process Manager', color: 'text-orange-400' },
             ].map((t) => (
-              <div key={t.name} className="panel p-3 text-center">
+              <div key={t.name} className="panel cursor-default p-3 text-center transition-all hover:scale-[1.03] hover:border-zord-accent/30">
                 <div className={`text-xs font-semibold ${t.color}`}>{t.name}</div>
                 <div className="mt-0.5 text-[10px] text-zord-text-muted">{t.role}</div>
               </div>
@@ -1113,7 +1113,7 @@ export default function LandingPage() {
 
       {/* PLANS */}
       <section className="border-b border-zord-border py-20">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="mb-12 text-center">
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Planos</span>
             <h2 className="mt-2 text-2xl font-bold text-zord-text sm:text-3xl">Para Cada Escala de Operação</h2>
@@ -1122,7 +1122,7 @@ export default function LandingPage() {
             {PLANS.map((p) => (
               <div
                 key={p.name}
-                className={`panel relative p-5 ${p.highlight ? 'border-purple-700/50 bg-purple-950/10' : ''}`}
+                className={`panel relative p-5 transition-all hover:shadow-xl hover:shadow-black/30 hover:-translate-y-0.5 ${p.highlight ? 'border-purple-700/50 bg-purple-950/10 hover:border-purple-600/60' : 'hover:border-zord-accent/30'}`}
               >
                 {p.highlight && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full border border-purple-700/50 bg-purple-900/80 px-3 py-0.5 text-[9px] font-bold uppercase tracking-wider text-purple-300">
@@ -1161,7 +1161,7 @@ export default function LandingPage() {
 
       {/* CTA */}
       <section className="py-20">
-        <div className="mx-auto max-w-3xl px-4 text-center">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-zord-accent/30 bg-zord-accent/5 px-3 py-1">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-zord-accent" />
             <span className="text-[10px] font-medium uppercase tracking-widest text-zord-accent">Demonstração Personalizada</span>
@@ -1191,7 +1191,7 @@ export default function LandingPage() {
 
       {/* FOOTER */}
       <footer className="border-t border-zord-border py-8">
-        <div className="mx-auto max-w-7xl px-4">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <div className="flex items-center gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded bg-zord-accent">
